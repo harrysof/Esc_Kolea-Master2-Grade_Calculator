@@ -51,8 +51,9 @@ def calculate_semester_average():
 st.title("Master 2 Accounting - S1 Grade Calculator ~ By Sofiane Belkacem Nacer")
 
 subjects = [
-    "Inferential Statistics", "Financial Accounting", "Management",
-    "Marketing", "Macroeconomy", "Computer Science", "Law", "English"
+    "Marche Des Capitaux", "Comptabilite Approfondie", "Management Des Couts",
+    "Control De Gestion", "Technique Bancaire", "PMO", "Planification Financiere",
+    "Strategie D'entreprise", "Systeme d’Information de Gestion", "Droit", "Finance Publique"  
 ]
 
 for subject in subjects:
