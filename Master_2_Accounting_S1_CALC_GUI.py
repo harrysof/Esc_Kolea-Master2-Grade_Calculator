@@ -43,7 +43,7 @@ def calculate_semester_average():
     formatted_float = "{:.2f}".format(semester_average)
     better_total = "{:.2f}".format(total)
 
-    st.success(f"Semester Average: {formatted_float}")
+    st.success(f"Moyenne Semestrielle Estimée: {formatted_float}")
     st.success(f"Total: {better_total}")
 
 
