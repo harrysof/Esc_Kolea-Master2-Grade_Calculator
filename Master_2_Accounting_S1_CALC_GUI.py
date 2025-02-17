@@ -129,6 +129,6 @@ st.markdown("<br>", unsafe_allow_html=True)
 
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
-    if st.button("Calculate Average"):
+    if st.button("Calculate Grade"):
         calculate_semester_average()
 
