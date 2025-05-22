@@ -171,36 +171,30 @@ with col2:
 with semester_tabs[0]:
     st.markdown("<h2 style='text-align: center;'>Semestre 1</h2>", unsafe_allow_html=True)
 
-    with st.container():
-        col1, col2 = st.columns(2)
-        
-        subjects_list = list(s1_subjects.keys())
-        half = len(subjects_list) // 2
-        
-        for i, subject in enumerate(subjects_list):
-            coef = s1_subjects[subject]
-            current_col = col1 if i < half else col2
-            with current_col:
-                st.markdown(f'<div class="subject-header">{subject} (Coef: {coef})</div>', unsafe_allow_html=True)
-                subcol1, subcol2 = st.columns(2)
-                with subcol1:
-                    st.number_input(
-                        "Exam",
-                        key=f"S1_{subject}_exam",
-                        min_value=0.0,
-                        value=None,
-                        step=0.05,
-                        format="%.2f"
-                    )
-                with subcol2:
-                    st.number_input(
-                        "TD",
-                        key=f"S1_{subject}_TD",
-                        min_value=0.0,
-                        value=None,
-                        step=0.05,
-                        format="%.2f"
-                    )
+    subjects_list = list(s1_subjects.keys())
+    for subject in subjects_list:
+        coef = s1_subjects[subject]
+        st.markdown(f'<div class="subject-header">{subject} (Coef: {coef})</div>', unsafe_allow_html=True)
+
+        col_exam, col_td = st.columns(2)
+        with col_exam:
+            st.number_input(
+                "Exam",
+                key=f"S1_{subject}_exam",
+                min_value=0.0,
+                value=None,
+                step=0.05,
+                format="%.2f"
+            )
+        with col_td:
+            st.number_input(
+                "TD",
+                key=f"S1_{subject}_TD",
+                min_value=0.0,
+                value=None,
+                step=0.05,
+                format="%.2f"
+            )
 
     st.markdown("<br>", unsafe_allow_html=True)
 
@@ -212,36 +206,30 @@ with semester_tabs[0]:
 with semester_tabs[1]:
     st.markdown("<h2 style='text-align: center;' class='s2-color'>Semestre 2</h2>", unsafe_allow_html=True)
 
-    with st.container():
-        col1, col2 = st.columns(2)
-        
-        subjects_list = list(s2_subjects.keys())
-        half = len(subjects_list) // 2
-        
-        for i, subject in enumerate(subjects_list):
-            coef = s2_subjects[subject]
-            current_col = col1 if i < half else col2
-            with current_col:
-                st.markdown(f'<div class="subject-header s2-color">{subject} (Coef: {coef})</div>', unsafe_allow_html=True)
-                subcol1, subcol2 = st.columns(2)
-                with subcol1:
-                    st.number_input(
-                        "Exam",
-                        key=f"S2_{subject}_exam",
-                        min_value=0.0,
-                        value=None,
-                        step=0.05,
-                        format="%.2f"
-                    )
-                with subcol2:
-                    st.number_input(
-                        "TD",
-                        key=f"S2_{subject}_TD",
-                        min_value=0.0,
-                        value=None,
-                        step=0.05,
-                        format="%.2f"
-                    )
+    subjects_list = list(s2_subjects.keys())
+    for subject in subjects_list:
+        coef = s2_subjects[subject]
+        st.markdown(f'<div class="subject-header s2-color">{subject} (Coef: {coef})</div>', unsafe_allow_html=True)
+
+        col_exam, col_td = st.columns(2)
+        with col_exam:
+            st.number_input(
+                "Exam",
+                key=f"S2_{subject}_exam",
+                min_value=0.0,
+                value=None,
+                step=0.05,
+                format="%.2f"
+            )
+        with col_td:
+            st.number_input(
+                "TD",
+                key=f"S2_{subject}_TD",
+                min_value=0.0,
+                value=None,
+                step=0.05,
+                format="%.2f"
+            )
 
     st.markdown("<br>", unsafe_allow_html=True)
 
