@@ -10,7 +10,7 @@ st.markdown("""
     <style>
     .main-title {
         font-size: 2.5rem;
-        color: #00cc00;
+        color: #848CCF;
         text-align: center;
         padding: 1.5rem 0;
         background: #0e1118;
