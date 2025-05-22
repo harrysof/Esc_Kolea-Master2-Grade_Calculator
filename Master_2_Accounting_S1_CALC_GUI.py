@@ -2,7 +2,7 @@ import streamlit as st
 
 st.set_page_config(
     page_title="Master 2 Accounting Calculator",
-    page_icon="📊",
+    page_icon="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ficon-library.com%2Fimages%2Faccountant-icon%2Faccountant-icon-12.jpg&f=1&nofb=1&ipt=b1f3d3479f6a83859d981d3073925a0dd31c610e0293dc40300c2eef8dcdf1ca",
     layout="wide"
 )
 
