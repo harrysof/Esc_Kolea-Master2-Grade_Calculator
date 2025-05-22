@@ -86,14 +86,14 @@ s1_subjects = {
 
 s2_subjects = {
     "Droit pénal des affaires": 3,
-    "Analyse et conception de systèmes d'information": 3,
+    "ACSI": 3,
     "Audit comptable et financier": 3,
     "Économie managériale": 3,
     "Animation et contrôle budgétaire": 3,
     "Comptabilité des sociétés": 3,
     "Comptabilité publique 1": 3,
     "Stage": 3,
-    "Initiation à la méthodologie": 1.5,
+    "Méthodologie": 1.5,
     "Finance d'entreprise approfondie": 3,
     "Comptabilité des instruments financiers": 1.5
 }
