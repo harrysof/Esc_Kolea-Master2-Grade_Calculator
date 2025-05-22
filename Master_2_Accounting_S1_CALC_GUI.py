@@ -57,7 +57,7 @@ st.markdown("""
         font-weight: bold;
     }
     .s2-color {
-        color: #a55eea;
+        color: #848CCF;
     }
     </style>
     """, unsafe_allow_html=True)
