@@ -40,8 +40,8 @@ st.markdown("""
     .semester-selector {
         display: flex;
         justify-content: center;
-        gap: 20px;
-        margin-bottom: 30px;
+        gap: 30px;
+        margin-bottom: 40px;
     }
     .semester-button {
         background-color: #4f8bf9;
