@@ -59,6 +59,43 @@ st.markdown("""
     .s2-color {
         color: #848CCF;
     }
+    /* Corner GIF Styles */
+    .corner-gif {
+        position: fixed;
+        top: 85px;
+        right: 10px;
+        z-index: 9999;
+        width: 80px;
+        height: 80px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        opacity: 0.8;
+        transition: opacity 0.3s ease;
+    }
+    .corner-gif:hover {
+        opacity: 1;
+        transform: scale(1.1);
+        transition: all 0.3s ease;
+    }
+    
+    /* Alternative: Bottom right corner */
+    .corner-gif-bottom {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 9999;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        opacity: 0.7;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+st.markdown("""
+    <img src="https://media3.giphy.com/media/njON3jEmTYHEfRbfsk/200w.gif?cid=6c09b95286r0q4sdyv82fj0t6vx4gmmec7lipefp8jihytoe&ep=v1_stickers_search&rid=200w.gif&ct=s" class="corner-gif" alt="Finance GIF">
+    """, unsafe_allow_html=True)
     </style>
     """, unsafe_allow_html=True)
 
