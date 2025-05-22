@@ -96,8 +96,6 @@ st.markdown("""
 st.markdown("""
     <img src="https://media3.giphy.com/media/njON3jEmTYHEfRbfsk/200w.gif?cid=6c09b95286r0q4sdyv82fj0t6vx4gmmec7lipefp8jihytoe&ep=v1_stickers_search&rid=200w.gif&ct=s" class="corner-gif" alt="Finance GIF">
     """, unsafe_allow_html=True)
-    </style>
-    """, unsafe_allow_html=True)
 
 st.markdown("""
     <div class="main-title">
