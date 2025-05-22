@@ -27,7 +27,7 @@ st.markdown("""
     }
     .stButton > button {
         width: 100%;
-        background-color: #F6EFA6;
+        background-color: #848CCF;
         color: white;
     }
     .result-box {
