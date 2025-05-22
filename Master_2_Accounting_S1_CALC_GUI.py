@@ -64,7 +64,7 @@ st.markdown("""
 
 st.markdown("""
     <div class="main-title">
-        Master 2 Accounting<br>Grade Calculator<br>
+        Master Accounting<br>Grade Calculator<br>
         <span style="font-size: 1.2rem; color: #dcdcdc;">By Sofiane Belkacem Nacer</span>
     </div>
     """, unsafe_allow_html=True)
