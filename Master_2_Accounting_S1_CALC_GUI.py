@@ -62,7 +62,7 @@ st.markdown("""
     /* Corner GIF Styles */
     .corner-gif {
         position: fixed;
-        top: 85px;
+        top: 95px;
         right: 10px;
         z-index: 9999;
         width: 80px;
