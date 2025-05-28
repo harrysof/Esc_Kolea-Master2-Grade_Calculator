@@ -537,7 +537,7 @@ def display_semester_subjects_ui(subjects_dict, semester_id_str, spec_key_prefix
 # --- Main Application Tabs ---
 main_app_tabs_names = [
     "Finance d'entreprise", "Comptabilité et finance", "Contrôle de gestion", 
-    "Monie, Finance et Banque", "Management", "Marketing"
+    "MFB", "Management", "Marketing"
 ]
 main_app_tabs = st.tabs(main_app_tabs_names)
 
@@ -545,7 +545,7 @@ branch_configs = [
     {"name": "Finance d'entreprise", "key_prefix": "FIN", "s1": finance_s1_subjects, "s2": finance_s2_subjects, "gif": finance_gif_html, "section_class": "finance-section", "active_tab_class": "finance-section-active-main-tab"},
     {"name": "Comptabilité et finance", "key_prefix": "ACC", "s1": accounting_s1_subjects, "s2": accounting_s2_subjects, "gif": accounting_gif_html, "section_class": "accounting-section", "active_tab_class": "accounting-section-active-main-tab"},
     {"name": "Contrôle de gestion", "key_prefix": "CDG", "s1": cdg_s1_subjects, "s2": cdg_s2_subjects, "gif": None, "section_class": "cdg-section", "active_tab_class": "cdg-section-active-main-tab"},
-    {"name": "Monie, Finance et Banque", "key_prefix": "MFB", "s1": mfb_s1_subjects, "s2": mfb_s2_subjects, "gif": None, "section_class": "mfb-section", "active_tab_class": "mfb-section-active-main-tab"},
+    {"name": "MFB", "key_prefix": "MFB", "s1": mfb_s1_subjects, "s2": mfb_s2_subjects, "gif": None, "section_class": "mfb-section", "active_tab_class": "mfb-section-active-main-tab"},
     {"name": "Management", "key_prefix": "MGT", "s1": management_s1_subjects, "s2": management_s2_subjects, "gif": None, "section_class": "management-section", "active_tab_class": "management-section-active-main-tab"},
     {"name": "Marketing", "key_prefix": "MKT", "s1": marketing_s1_subjects, "s2": marketing_s2_subjects, "gif": None, "section_class": "marketing-section", "active_tab_class": "marketing-section-active-main-tab"},
 ]
@@ -580,7 +580,7 @@ function styleActiveMainTab() {
         if (tabText === "Finance d'entreprise") activeClass = 'finance-section-active-main-tab';
         else if (tabText === "Comptabilité et finance") activeClass = 'accounting-section-active-main-tab';
         else if (tabText === "Contrôle de gestion") activeClass = 'cdg-section-active-main-tab';
-        else if (tabText === "Monie, Finance et Banque") activeClass = 'mfb-section-active-main-tab';
+        else if (tabText === "MFB") activeClass = 'mfb-section-active-main-tab';
         else if (tabText === "Management") activeClass = 'management-section-active-main-tab';
         else if (tabText === "Marketing") activeClass = 'marketing-section-active-main-tab';
         
