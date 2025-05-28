@@ -338,12 +338,8 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 # --- GIFs (Optional) ---
-finance_gif_html = """
-    <img src="" class="corner-gif finance-corner-gif" alt="Finance GIF">
-"""
-accounting_gif_html = """
-    <img src="" class="corner-gif accounting-corner-gif" alt="Accounting GIF">
-"""
+# finance_gif_html = """ <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fbestanimations.com%2FAnimals%2FMammals%2FCats%2Fcats%2Fcute-kitty-animated-gif-61.gif&f=1&nofb=1&ipt=9b9f49feca4c1a8d04b816cebb11048d1cba7254539b845380dd510c43cb5d4e" class="corner-gif finance-corner-gif" alt="Finance GIF">"""
+#accounting_gif_html = """<img src="https://media3.giphy.com/media/njON3jEmTYHEfRbfsk/200w.gif?cid=6c09b95286r0q4sdyv82fj0t6vx4gmmec7lipefp8jihytoe&ep=v1_stickers_search&rid=200w.gif&ct=s" class="corner-gif accounting-corner-gif" alt="Accounting GIF">"""
 
 BRANCH_COLORS = {
     "FIN": "var(--finance-color)", "ACC": "var(--accounting-color)", "CDG": "var(--cdg-color)",
@@ -621,8 +617,8 @@ for i, tab_content_container in enumerate(main_app_tabs):
     with tab_content_container:
         branch_config = branch_configs[i]
         st.markdown(f'<div class="{branch_config["section_class"]}">', unsafe_allow_html=True)
-        if branch_config["gif"]: 
-            st.markdown(branch_config["gif"], unsafe_allow_html=True)
+        #if branch_config["gif"]: 
+           # st.markdown(branch_config["gif"], unsafe_allow_html=True)
         
         col_padding1, col_content_area, col_padding2 = st.columns([0.25, 2.5, 0.25])
 
