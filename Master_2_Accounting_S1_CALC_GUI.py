@@ -2,7 +2,7 @@ import streamlit as st
 
 # --- Page Configuration ---
 st.set_page_config(
-    page_title="Grade Calculator", # Simplified
+    page_title="Grade Calculator",
     page_icon="https://cdn-icons-png.flaticon.com/512/2909/2909988.png",
     layout="wide"
 )
@@ -22,10 +22,9 @@ st.markdown("""
         --management-color: #32CD32;     /* LimeGreen */
         --marketing-color: #FF69B4;       /* HotPink */
 
-        --text-light: #F0F0F0; /* Brighter light text */
-        --text-medium: #C0C0C0; /* Lighter medium text */
-        --text-dark: #333333;
-        --bg-main: #121218; /* Even darker main background for more contrast */
+        --text-light: #F0F0F0;
+        --text-medium: #C0C0C0;
+        --bg-main: #121218; 
         --bg-content: #1E1E2A; 
         --bg-accent: #2C2C3E;  
         --border-color: #3A3A5A;
@@ -39,48 +38,68 @@ st.markdown("""
         line-height: 1.6;
     }
 
-    /* Main Title Styling - No Box */
+    /* Main Title Styling - No Box, Continuous Shine */
     .title-area-container {
         text-align: center;
-        margin-top: 2rem; /* More space at the top */
-        margin-bottom: 3rem; 
+        margin-top: 2rem;
+        margin-bottom: 2.5rem; /* Reduced margin a bit */
     }
+
+    @keyframes continuousShine {
+        0% { left: -100%; }
+        50% { left: 125%; } /* Moves across */
+        100% { left: 125%; } /* Stays off-screen right before resetting, effectively pauses */
+    }
+
     .interactive-main-title {
-        font-size: 3rem;  /* Larger */
-        font-weight: 700; /* Bolder */
+        font-size: 2.8rem;  /* Slightly adjusted */
+        font-weight: 700; 
         color: var(--text-light);
-        margin-bottom: 0.5rem;
-        letter-spacing: 1px; /* Slight letter spacing */
-        display: inline-block; /* Necessary for some transforms and pseudo-elements */
-        position: relative; /* For the shine effect */
-        cursor: default; /* Indicates it's not a link */
-        transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smoother tilt */
-        perspective: 1000px; /* For 3D tilt */
-        overflow: hidden; /* To contain the shine */
+        margin-bottom: 0.4rem;
+        letter-spacing: 1px; 
+        display: inline-block; 
+        position: relative; 
+        overflow: hidden; /* Crucial for containing the shine */
     }
     .interactive-main-title::before { /* Shine pseudo-element */
         content: '';
         position: absolute;
         top: 0;
-        left: -100%; /* Start off-screen to the left */
-        width: 50%; /* Width of the shine */
+        left: -100%; 
+        width: 60%; /* Width of the shine */
         height: 100%;
-        background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
-        transform: skewX(-25deg); /* Angle the shine */
-        transition: left 0.75s cubic-bezier(0.25, 0.8, 0.25, 1); /* Shine speed */
-    }
-    .title-area-container:hover .interactive-main-title {
-        transform: scale(1.03) rotateY(5deg) rotateX(2deg); /* Tilt effect */
-    }
-    .title-area-container:hover .interactive-main-title::before {
-        left: 125%; /* Move shine across and off-screen to the right */
+        background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.25) 50%, rgba(255,255,255,0) 100%);
+        transform: skewX(-25deg); 
+        animation: continuousShine 4s infinite linear; /* 4s duration, linear, infinite loop */
+        animation-delay: 1s; /* Initial delay */
     }
 
+    /* Credit Subtitle - Animated Gradient Text */
+    @keyframes textGradientAnimation {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
     .credit-subtitle {
         font-size: 1rem;
-        color: var(--text-medium);
-        font-weight: 300;
-        margin-top: 0.2rem;
+        font-weight: 400; /* Slightly bolder for the effect */
+        margin-top: 0.3rem;
+        display: inline-block; /* For background clip */
+        background: linear-gradient(to right, 
+            var(--finance-color), 
+            var(--accounting-color), 
+            var(--cdg-color), 
+            var(--mfb-color), 
+            var(--management-color), 
+            var(--marketing-color),
+            var(--finance-color) /* Loop back to first color for smooth transition */
+        );
+        background-size: 300% 100%; /* Make gradient wider than text */
+        -webkit-background-clip: text;
+        -moz-background-clip: text;
+        -webkit-text-fill-color: transparent; 
+        -moz-text-fill-color: transparent;
+        animation: textGradientAnimation 15s ease infinite; /* 15s for a slow, smooth cycle */
     }
     
     /* General Section Styling */
@@ -88,41 +107,61 @@ st.markdown("""
         padding-top: 1rem;
     }
 
-    /* MAIN BRANCH Tab Styling (st.tabs at the top level) */
-    div[data-testid="stTabs"] > div[role="tablist"] { /* Targets the main tab bar */
+    /* MAIN BRANCH Tab Styling (st.tabs at the top level) - Mobile Friendly */
+    div[data-testid="stTabs"] > div[role="tablist"] { 
         display: flex;
-        justify-content: center; /* Center the main branch tabs */
-        margin-bottom: 2rem; /* Space below main tabs */
-        border-bottom: 2px solid var(--border-color); /* Subtle separator */
+        /* justify-content: center; /* Remove for scrolling */
+        overflow-x: auto; /* Enable horizontal scrolling */
+        overflow-y: hidden; /* Prevent vertical scrollbar */
+        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+        white-space: nowrap; /* Prevent tabs from wrapping */
+        margin-bottom: 2rem; 
+        border-bottom: 2px solid var(--border-color); 
         padding-bottom: 0.5rem;
+        padding-left: 10px; /* Some padding so first tab isn't at edge */
+        padding-right: 10px;/* Some padding so last tab isn't at edge */
     }
-    div[data-testid="stTabs"] > div[role="tablist"] > button[role="tab"] { /* Targets main tab buttons */
+    div[data-testid="stTabs"] > div[role="tablist"]::-webkit-scrollbar {
+        height: 4px; /* Thin scrollbar */
+    }
+    div[data-testid="stTabs"] > div[role="tablist"]::-webkit-scrollbar-thumb {
+        background: var(--border-color); 
+        border-radius: 10px;
+    }
+    div[data-testid="stTabs"] > div[role="tablist"] > button[role="tab"] { 
         font-family: var(--font-family);
-        font-size: 1.1rem; /* Slightly larger */
-        font-weight: 600 !important; /* BOLD */
+        font-size: 1.05rem; /* Slightly smaller for more tabs on screen */
+        font-weight: 600 !important; 
         color: var(--text-medium) !important;
         background-color: transparent !important;
         border: none !important;
-        padding: 0.8rem 1.5rem !important;
-        margin: 0 0.5rem !important; /* Spacing between main tabs */
-        border-radius: 8px 8px 0 0 !important; /* Rounded top corners */
+        padding: 0.8rem 1.2rem !important; /* Adjusted padding */
+        margin: 0 0.3rem !important; 
+        border-radius: 8px 8px 0 0 !important; 
         transition: color 0.3s ease, border-bottom-color 0.3s ease;
-        border-bottom: 3px solid transparent !important; /* For active indicator */
+        border-bottom: 3px solid transparent !important; 
+        flex-shrink: 0; /* Prevent tabs from shrinking */
+        display: inline-block; /* Ensure they behave with nowrap */
     }
     div[data-testid="stTabs"] > div[role="tablist"] > button[role="tab"]:hover {
         color: var(--text-light) !important;
     }
-    /* Active MAIN BRANCH tab styling needs to be specific to its color */
-    /* This is hard with Streamlit's current theming. We'll color semester tabs instead primarily. */
-    /* For now, a generic active state for main tabs: */
-     div[data-testid="stTabs"] > div[role="tablist"] > button[role="tab"][aria-selected="true"] {
+    /* Active MAIN BRANCH tab styling */
+    .finance-section-active-main-tab { border-bottom-color: var(--finance-color) !important; color: var(--finance-color) !important; }
+    .accounting-section-active-main-tab { border-bottom-color: var(--accounting-color) !important; color: var(--accounting-color) !important; }
+    .cdg-section-active-main-tab { border-bottom-color: var(--cdg-color) !important; color: var(--cdg-color) !important; }
+    .mfb-section-active-main-tab { border-bottom-color: var(--mfb-color) !important; color: var(--mfb-color) !important; }
+    .management-section-active-main-tab { border-bottom-color: var(--management-color) !important; color: var(--management-color) !important; }
+    .marketing-section-active-main-tab { border-bottom-color: var(--marketing-color) !important; color: var(--marketing-color) !important; }
+    /* Default active state if no specific class is applied (fallback) */
+    div[data-testid="stTabs"] > div[role="tablist"] > button[role="tab"][aria-selected="true"] {
         color: var(--text-light) !important;
-        /* The border color will be dynamic based on the section class in Python for active tab content */
+        border-bottom-color: var(--text-light) !important;
     }
 
 
     /* SEMESTER Tab Styling (within each branch) */
-    .stTabs { /* Scoped within each branch for semester tabs */
+    .stTabs { 
         border-radius: 8px;
         overflow: hidden;
     }
@@ -149,8 +188,6 @@ st.markdown("""
         color: var(--text-light);
         background-color: #3e3e5a; 
     }
-
-    /* Branch-specific active SEMESTER tab styling */
     .finance-section .stTabs [role="tab"][aria-selected="true"] { background-color: var(--finance-color); color: white !important; }
     .accounting-section .stTabs [role="tab"][aria-selected="true"] { background-color: var(--accounting-color); color: white !important; }
     .cdg-section .stTabs [role="tab"][aria-selected="true"] { background-color: var(--cdg-color); color: white !important; }
@@ -163,7 +200,7 @@ st.markdown("""
         font-size: 1.15rem; 
         font-weight: 500;
         padding: 0.8rem 0 0.6rem 0;
-        border-bottom: 1px solid; /* Color applied dynamically */
+        border-bottom: 1px solid; 
         margin-top: 1.8rem; 
         margin-bottom: 1.2rem;
     }
@@ -251,8 +288,8 @@ st.markdown("""
     /* Semester Title (S1/S2) within each tab content */
     .semester-title {
         text-align: center;
-        font-size: 1.8rem; /* Larger */
-        font-weight: 600; /* Bolder */
+        font-size: 1.8rem; 
+        font-weight: 600; 
         margin-top: 1.5rem; 
         margin-bottom: 2rem;
     }
@@ -260,7 +297,7 @@ st.markdown("""
     /* Corner GIF Styles - Optional */
     .corner-gif {
         position: fixed;
-        z-index: 9990; /* Lowered slightly if main tabs overlap */
+        z-index: 9990; 
         width: 65px; 
         height: 65px;
         border-radius: 8px;
@@ -278,7 +315,7 @@ st.markdown("""
     /* Footer Styling */
     .modern-footer {
         text-align: center;
-        margin-top: 5rem; /* More space before footer */
+        margin-top: 5rem; 
         padding: 2rem;
         background-color: var(--bg-content); 
         border-top: 1px solid var(--border-color);
@@ -301,7 +338,6 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 # --- GIFs (Optional) ---
-# To remove GIFs, comment out or delete these st.markdown lines in the main tab loop below.
 finance_gif_html = """
     <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fbestanimations.com%2FAnimals%2FMammals%2FCats%2Fcats%2Fcute-kitty-animated-gif-61.gif&f=1&nofb=1&ipt=9b9f49feca4c1a8d04b816cebb11048d1cba7254539b845380dd510c43cb5d4e" class="corner-gif finance-corner-gif" alt="Finance GIF">
 """
@@ -314,18 +350,16 @@ BRANCH_COLORS = {
     "MFB": "var(--mfb-color)", "MGT": "var(--management-color)", "MKT": "var(--marketing-color)",
 }
 
-# --- Subject Definitions (Capitalized) ---
+# --- Subject Definitions (Capitalized - function from previous step) ---
 def capitalize_module_name(name):
-    # More robust capitalization for French specifics and general cases
     words = []
-    for word in name.split(' '):
-        if word.lower() in ["de", "la", "des", "et", "à", "l", "d"]: # common French small words
-             if words and words[-1][-1] != "'": # if previous word not ending with apostrophe
+    for word_idx, word in enumerate(name.split(' ')):
+        if word.lower() in ["de", "la", "des", "et", "à", "l", "d"] and word_idx > 0:
+             if words and words[-1][-1] != "'": 
                 words.append(word.lower())
-             else: # l' or d' case
+             else: 
                 words.append(word)
-
-        elif "'" in word: # Handle words like "d'entreprise"
+        elif "'" in word: 
             parts = word.split("'")
             words.append(parts[0].lower() + "'" + parts[1].capitalize())
         else:
@@ -343,7 +377,6 @@ finance_s2_subjects = {capitalize_module_name(k): v for k, v in {
     "Évaluation des projets d'investissement": 3, "Analyse et conception de systèmes d'information": 3,
     "Convexité et optimisation": 3, "Modèles stochastiques": 3
 }.items()}
-
 accounting_s1_subjects = {capitalize_module_name(k): v for k, v in {
     "Marche Des Capitaux": 3, "Comptabilite Approfondie": 3, "Management Des Couts": 3,
     "Control De Gestion": 3, "Technique Bancaire": 3, "PMO": 3, "Planification Financiere": 3,
@@ -354,7 +387,6 @@ accounting_s2_subjects = {capitalize_module_name(k): v for k, v in {
     "Animation et contrôle budgétaire": 3, "Comptabilité des sociétés": 3, "Comptabilité publique 1": 3,
     "Stage": 3, "Méthodologie": 1.5, "Finance d'entreprise approfondie": 3, "Comptabilité des instruments financiers": 1.5
 }.items()}
-
 cdg_s1_subjects = {capitalize_module_name(k): v for k, v in {
     "Management des coûts": 3, "Marché des capitaux et évaluation des actifs financiers": 3,
     "Droit des sociétés": 1.5, "Techniques bancaires": 3, "Comptabilité financière approfondie": 3,
@@ -369,7 +401,6 @@ cdg_s2_subjects = {capitalize_module_name(k): v for k, v in {
     "Diagnostic d'entreprise par l'approche de la qualité totale": 1.5, "Techniques de sondage": 3,
     "Mesures de performance": 1.5, "Tableau de bord": 1.5, "Droit pénal des affaires": 3
 }.items()}
-
 mfb_s1_subjects = {capitalize_module_name(k): v for k, v in {
     "Théorie financière": 3, "Séries temporelle": 3, "Technique bancaires": 3,
     "Macroéconomie profonde": 3, "Management des opérations": 3, "Economie des intermédiaires financiers": 3,
@@ -383,7 +414,6 @@ mfb_s2_subjects = {capitalize_module_name(k): v for k, v in {
     "Economie managériale": 3, "droit des banques, assurance, boursier": 3,
     "finance islamique": 1.5, "Initiation méthodologie": 1.5
 }.items()}
-
 management_s1_subjects = {capitalize_module_name(k): v for k, v in {
     "Théorie de la décision et des jeux": 3, "Finances publiques": 1.5, "Culture d'entreprise": 1.5,
     "Gouvernance d'entreprise": 3, "Management public": 3, "Stratégie d'entreprise": 3,
@@ -397,7 +427,6 @@ management_s2_subjects = {capitalize_module_name(k): v for k, v in {
     "Comptabilité publique": 1.5, "Analyse et conception des systèmes d'information": 3,
     "Initiation à la méthodologie": 1.5
 }.items()}
-
 marketing_s1_subjects = {capitalize_module_name(k): v for k, v in {
     "Marketing des services": 3, "Contrôle de gestion": 3, "Stratégie d'entreprise": 3,
     "Management des opérations": 3, "Système d'informations de gestion": 3,
@@ -413,7 +442,6 @@ marketing_s2_subjects = {capitalize_module_name(k): v for k, v in {
     "Marketing produit et gestion de la marque": 3
 }.items()}
 
-
 # --- Session State Initialization ---
 all_subjects_config = {
     "FIN_S1": finance_s1_subjects, "FIN_S2": finance_s2_subjects,
@@ -425,25 +453,21 @@ all_subjects_config = {
 }
 
 def normalize_key_part(text):
-    # Normalization should be robust for key generation, independent of display capitalization
     text_lower = text.lower()
     return text_lower.replace(" ", "_").replace("'", "").replace("-", "_").replace("é", "e").replace("è", "e").replace("ê", "e").replace("à", "a").replace("ç", "c").replace("ô", "o").replace("û", "u")
 
 for config_key_prefix, subjects_dict in all_subjects_config.items():
-    for subject_display_name in subjects_dict: # Iterate over capitalized display names
-        subject_key_part = normalize_key_part(subject_display_name) # Normalize for key
+    for subject_display_name in subjects_dict: 
+        subject_key_part = normalize_key_part(subject_display_name) 
         exam_key = f"{config_key_prefix}_{subject_key_part}_exam"
         td_key = f"{config_key_prefix}_{subject_key_part}_TD"
-        if exam_key not in st.session_state:
-            st.session_state[exam_key] = None
-        if td_key not in st.session_state:
-            st.session_state[td_key] = None
+        if exam_key not in st.session_state: st.session_state[exam_key] = None
+        if td_key not in st.session_state: st.session_state[td_key] = None
 
-# --- Calculation Function (same as before, but uses normalized keys) ---
+# --- Calculation Function ---
 def calculate_semester_average(semester_num_char, subjects_with_coef, session_state_key_prefix):
     subjects_data = {}
     valid_input = True
-    
     for subject_display_name, coef in subjects_with_coef.items():
         subject_key_part = normalize_key_part(subject_display_name)
         exam_key = f"{session_state_key_prefix}{subject_key_part}_exam"
@@ -451,87 +475,64 @@ def calculate_semester_average(semester_num_char, subjects_with_coef, session_st
         try:
             exam_grade = st.session_state.get(exam_key)
             td_grade = st.session_state.get(td_key)
-            
             exam_grade = float(exam_grade if exam_grade is not None and str(exam_grade).strip() != "" else 0.0)
             td_grade = float(td_grade if td_grade is not None and str(td_grade).strip() != "" else 0.0)
-
             if not (0 <= exam_grade <= 20 and 0 <= td_grade <= 20):
                 st.error(f"Les notes pour '{subject_display_name}' doivent être entre 0 et 20.")
                 valid_input = False
-            
             subjects_data[subject_display_name] = {"exam": exam_grade, "td": td_grade, "coef": coef}
-
         except ValueError:
             st.error(f"Entrée invalide pour '{subject_display_name}'. Veuillez saisir uniquement des nombres.")
             valid_input = False
             subjects_data[subject_display_name] = {"exam": 0.0, "td": 0.0, "coef": coef} 
-
-    if not valid_input:
-        return
-
+    if not valid_input: return
     total_weighted_sum = 0
     total_credits = sum(subjects_with_coef.values())
-    
     if total_credits == 0:
         st.error("Total des crédits est zéro. Impossible de calculer la moyenne.")
         return
-
     for subject_name_loop, data in subjects_data.items():
         average = (data["exam"] * 0.67) + (data["td"] * 0.33)
         total_weighted_sum += average * data["coef"]
-
     semester_average = total_weighted_sum / total_credits if total_credits else 0
     formatted_avg = "{:.2f}".format(semester_average)
-    
     avg_color_hex = "#FF0000" 
     if semester_average >= 15: avg_color_hex = "#D89CF6"  
     elif semester_average >= 14: avg_color_hex = "#12CAD6"  
     elif semester_average >= 12: avg_color_hex = "#50D890"  
     elif semester_average >= 10: avg_color_hex = "#FE9801"  
-    
     st.markdown(f"""
         <div class="modern-result-box-container">
             <div class="modern-result-box">
                 <h3 class="result-header">Résultats</h3>
-                <p class="result-text">
-                    Moyenne S{semester_num_char}: <strong style="color: {avg_color_hex}">{formatted_avg}</strong>
-                </p>
+                <p class="result-text"> Moyenne S{semester_num_char}: <strong style="color: {avg_color_hex}">{formatted_avg}</strong></p>
             </div>
-        </div>
-    """, unsafe_allow_html=True)
+        </div>""", unsafe_allow_html=True)
 
 # --- UI Function to Display Semester Subjects ---
 def display_semester_subjects_ui(subjects_dict, semester_id_str, spec_key_prefix):
     title_semester_num = semester_id_str[-1]
-    branch_color = BRANCH_COLORS.get(spec_key_prefix, "var(--text-light)")
-
-    st.markdown(f"<h2 class='semester-title' style='color: {branch_color};'>Semestre {title_semester_num}</h2>", unsafe_allow_html=True)
-
-    session_state_key_prefix_for_subject_widgets = f"{spec_key_prefix}_{semester_id_str}_"
-
+    branch_color_var = BRANCH_COLORS.get(spec_key_prefix, "var(--text-light)")
+    st.markdown(f"<h2 class='semester-title' style='color: {branch_color_var};'>{semester_id_str.replace('S', 'Semestre ')}</h2>", unsafe_allow_html=True)
+    session_state_key_prefix_for_widgets = f"{spec_key_prefix}_{semester_id_str}_"
     for subject_display_name, coef in subjects_dict.items():
-        # Apply branch color and lighter border to subject header
-        border_bottom_color_with_alpha = branch_color.replace(')', ', 0.3)').replace('var(', 'rgba(') if 'var(' in branch_color else f"{branch_color}4D" # Heuristic for alpha
-        st.markdown(f'<div class="subject-header" style="color: {branch_color}; border-bottom-color: {border_bottom_color_with_alpha};">{subject_display_name} (Coef: {coef})</div>', unsafe_allow_html=True)
-        
+        border_color_css = f"color: {branch_color_var}; border-bottom-color: {branch_color_var.replace(')', ', 0.3)').replace('var(', 'rgba(') if 'var(' in branch_color_var else f'{branch_color_var}4D'};"
+        st.markdown(f'<div class="subject-header" style="{border_color_css}">{subject_display_name} (Coef: {coef})</div>', unsafe_allow_html=True)
         col_exam, col_td = st.columns(2)
         subject_key_part = normalize_key_part(subject_display_name)
-        exam_key_full = f"{session_state_key_prefix_for_subject_widgets}{subject_key_part}_exam"
-        td_key_full = f"{session_state_key_prefix_for_subject_widgets}{subject_key_part}_TD"
-
+        exam_key_full = f"{session_state_key_prefix_for_widgets}{subject_key_part}_exam"
+        td_key_full = f"{session_state_key_prefix_for_widgets}{subject_key_part}_TD"
         with col_exam:
-            st.number_input("Note Examen", key=exam_key_full, min_value=0.0, max_value=20.0, value=st.session_state.get(exam_key_full), step=0.05, format="%.2f", help="Note de l'examen (0-20)")
+            st.number_input("Note Examen", key=exam_key_full, min_value=0.0, max_value=20.0, value=st.session_state.get(exam_key_full), step=0.05, format="%.2f") # Removed help
         with col_td:
-            st.number_input("Note TD", key=td_key_full, min_value=0.0, max_value=20.0, value=st.session_state.get(td_key_full), step=0.05, format="%.2f", help="Note de TD (0-20)")
-    
+            st.number_input("Note TD", key=td_key_full, min_value=0.0, max_value=20.0, value=st.session_state.get(td_key_full), step=0.05, format="%.2f") # Removed help
     st.markdown("<br>", unsafe_allow_html=True) 
-    
     _, btn_col, _ = st.columns([1, 1.5, 1]) 
     with btn_col:
         button_key = f"calculate_avg_{spec_key_prefix}_{semester_id_str}"
         button_text = f"Calculer Moyenne S{title_semester_num}"
         if st.button(button_text, key=button_key):
-            calculate_semester_average(title_semester_num, subjects_dict, session_state_key_prefix_for_subject_widgets)
+            calculate_semester_average(title_semester_num, subjects_dict, session_state_key_prefix_for_widgets)
 
 # --- Main Application Tabs ---
 main_app_tabs_names = [
@@ -541,42 +542,93 @@ main_app_tabs_names = [
 main_app_tabs = st.tabs(main_app_tabs_names)
 
 branch_configs = [
-    {"name": "Finance d'entreprise", "key_prefix": "FIN", "s1": finance_s1_subjects, "s2": finance_s2_subjects, "gif": finance_gif_html, "section_class": "finance-section"},
-    {"name": "Comptabilité et finance", "key_prefix": "ACC", "s1": accounting_s1_subjects, "s2": accounting_s2_subjects, "gif": accounting_gif_html, "section_class": "accounting-section"},
-    {"name": "Contrôle de gestion", "key_prefix": "CDG", "s1": cdg_s1_subjects, "s2": cdg_s2_subjects, "gif": None, "section_class": "cdg-section"},
-    {"name": "Monie, Finance et Banque", "key_prefix": "MFB", "s1": mfb_s1_subjects, "s2": mfb_s2_subjects, "gif": None, "section_class": "mfb-section"},
-    {"name": "Management", "key_prefix": "MGT", "s1": management_s1_subjects, "s2": management_s2_subjects, "gif": None, "section_class": "management-section"},
-    {"name": "Marketing", "key_prefix": "MKT", "s1": marketing_s1_subjects, "s2": marketing_s2_subjects, "gif": None, "section_class": "marketing-section"},
+    {"name": "Finance d'entreprise", "key_prefix": "FIN", "s1": finance_s1_subjects, "s2": finance_s2_subjects, "gif": finance_gif_html, "section_class": "finance-section", "active_tab_class": "finance-section-active-main-tab"},
+    {"name": "Comptabilité et finance", "key_prefix": "ACC", "s1": accounting_s1_subjects, "s2": accounting_s2_subjects, "gif": accounting_gif_html, "section_class": "accounting-section", "active_tab_class": "accounting-section-active-main-tab"},
+    {"name": "Contrôle de gestion", "key_prefix": "CDG", "s1": cdg_s1_subjects, "s2": cdg_s2_subjects, "gif": None, "section_class": "cdg-section", "active_tab_class": "cdg-section-active-main-tab"},
+    {"name": "Monie, Finance et Banque", "key_prefix": "MFB", "s1": mfb_s1_subjects, "s2": mfb_s2_subjects, "gif": None, "section_class": "mfb-section", "active_tab_class": "mfb-section-active-main-tab"},
+    {"name": "Management", "key_prefix": "MGT", "s1": management_s1_subjects, "s2": management_s2_subjects, "gif": None, "section_class": "management-section", "active_tab_class": "management-section-active-main-tab"},
+    {"name": "Marketing", "key_prefix": "MKT", "s1": marketing_s1_subjects, "s2": marketing_s2_subjects, "gif": None, "section_class": "marketing-section", "active_tab_class": "marketing-section-active-main-tab"},
 ]
+
+# JavaScript to apply active class to main tab. This is a more robust way.
+# We can't directly change the class of the st.tabs button from Python after it's rendered.
+# So we'll use JS to find the selected tab and add our custom class.
+# This JS will run once when the script is executed. For dynamic updates if Streamlit
+# re-renders tabs without full script re-run, a more complex observer might be needed.
+js_to_style_active_tab = """
+<script>
+function styleActiveMainTab() {
+    // Remove existing active classes from all main tabs
+    const allMainTabs = parent.document.querySelectorAll('div[data-testid="stTabs"] > div[role="tablist"] > button[role="tab"]');
+    allMainTabs.forEach(tab => {
+        tab.classList.remove(
+            'finance-section-active-main-tab', 
+            'accounting-section-active-main-tab',
+            'cdg-section-active-main-tab',
+            'mfb-section-active-main-tab',
+            'management-section-active-main-tab',
+            'marketing-section-active-main-tab'
+        );
+    });
+
+    // Find the currently selected main tab
+    const selectedMainTab = parent.document.querySelector('div[data-testid="stTabs"] > div[role="tablist"] > button[role="tab"][aria-selected="true"]');
+    
+    if (selectedMainTab) {
+        const tabText = selectedMainTab.textContent.trim();
+        let activeClass = '';
+        if (tabText === "Finance d'entreprise") activeClass = 'finance-section-active-main-tab';
+        else if (tabText === "Comptabilité et finance") activeClass = 'accounting-section-active-main-tab';
+        else if (tabText === "Contrôle de gestion") activeClass = 'cdg-section-active-main-tab';
+        else if (tabText === "Monie, Finance et Banque") activeClass = 'mfb-section-active-main-tab';
+        else if (tabText === "Management") activeClass = 'management-section-active-main-tab';
+        else if (tabText === "Marketing") activeClass = 'marketing-section-active-main-tab';
+        
+        if (activeClass) {
+            selectedMainTab.classList.add(activeClass);
+        }
+    }
+}
+
+// Run on initial load
+styleActiveMainTab();
+
+// Rerun if Streamlit re-renders (e.g., after button click if tabs are part of the re-render scope)
+// This is a bit of a guess if Streamlit re-renders the tablist buttons themselves.
+// A MutationObserver would be more robust but also more complex.
+const streamlitDoc = parent.document;
+if (streamlitDoc) {
+    const observer = new MutationObserver(function(mutationsList, observer) {
+        for(const mutation of mutationsList) {
+            if (mutation.type === 'childList' || mutation.type === 'attributes') {
+                // Check if the stTabs element itself was modified, or its attributes
+                if (mutation.target.closest('div[data-testid="stTabs"]')) {
+                     styleActiveMainTab();
+                     // console.log("Tabs possibly re-rendered, restyling active tab.");
+                }
+            }
+        }
+    });
+    observer.observe(streamlitDoc.body, { attributes: true, childList: true, subtree: true });
+}
+
+</script>
+"""
+st.components.v1.html(js_to_style_active_tab, height=0)
+
 
 for i, tab_content_container in enumerate(main_app_tabs):
     with tab_content_container:
         branch_config = branch_configs[i]
-        # Apply dynamic border color to the active main tab
-        active_tab_dynamic_style = f"""
-            <style>
-            div[data-testid="stTabs"] > div[role="tablist"] > button[role="tab"][aria-selected="true"]:nth-child({i+1}) {{
-                border-bottom-color: {BRANCH_COLORS.get(branch_config["key_prefix"], 'var(--text-light)')} !important;
-                color: {BRANCH_COLORS.get(branch_config["key_prefix"], 'var(--text-light)')} !important; /* Also color the text of active main tab */
-            }}
-            </style>
-        """
-        # This approach to style specific active tabs is a bit of a hack and might be fragile.
-        # Streamlit doesn't offer direct per-tab styling API for the main st.tabs component.
-        # A more robust way would be custom components or more complex JS, which is beyond simple CSS.
-        # For now, we'll attempt to color the active main tab's text and its bottom border.
-        # The CSS for nth-child will only work IF the active tab is the one being rendered.
-        # This won't dynamically change the already rendered tab bar style.
-
         st.markdown(f'<div class="{branch_config["section_class"]}">', unsafe_allow_html=True)
-        if branch_config["gif"]: # Optional GIF display
+        if branch_config["gif"]: 
             st.markdown(branch_config["gif"], unsafe_allow_html=True)
         
-        col_padding1, col_content_area, col_padding2 = st.columns([0.25, 2.5, 0.25]) # Adjusted centering
+        col_padding1, col_content_area, col_padding2 = st.columns([0.25, 2.5, 0.25])
 
         with col_content_area:
             st.markdown('<div class="branch-section-content">', unsafe_allow_html=True)
-            semester_sub_tabs = st.tabs(["Semestre 1", "Semestre 2"])
+            semester_sub_tabs = st.tabs([f"Semestre {s}" for s in [1,2]]) # Cleaner tab names
             with semester_sub_tabs[0]:
                 display_semester_subjects_ui(branch_config["s1"], "S1", branch_config["key_prefix"])
             with semester_sub_tabs[1]:
