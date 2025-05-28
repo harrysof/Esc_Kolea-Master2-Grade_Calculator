@@ -38,141 +38,92 @@ st.markdown("""
         line-height: 1.6;
     }
 
-    /* Main Title Styling - No Box, Continuous Shine */
+    /* Main Title Styling - Continuous Shine */
     .title-area-container {
         text-align: center;
         margin-top: 2rem;
-        margin-bottom: 2.5rem; /* Reduced margin a bit */
+        margin-bottom: 2.5rem;
     }
 
     @keyframes continuousShine {
-        0% { left: -100%; }
-        50% { left: 125%; } /* Moves across */
-        100% { left: 125%; } /* Stays off-screen right before resetting, effectively pauses */
+        0% { left: -120%; } /* Start further left */
+        40% { left: 140%; } /* Sweep across */
+        100% { left: 140%; } /* Hold before reset (effective pause) */
     }
 
     .interactive-main-title {
-        font-size: 2.8rem;  /* Slightly adjusted */
+        font-size: 2.8rem;
         font-weight: 700; 
         color: var(--text-light);
         margin-bottom: 0.4rem;
         letter-spacing: 1px; 
         display: inline-block; 
         position: relative; 
-        overflow: hidden; /* Crucial for containing the shine */
+        overflow: hidden;
     }
-    .interactive-main-title::before { /* Shine pseudo-element */
+    .interactive-main-title::before {
         content: '';
         position: absolute;
         top: 0;
-        left: -100%; 
-        width: 60%; /* Width of the shine */
+        left: -120%; 
+        width: 50%; 
         height: 100%;
-        background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.25) 50%, rgba(255,255,255,0) 100%);
+        background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
         transform: skewX(-25deg); 
-        animation: continuousShine 4s infinite linear; /* 4s duration, linear, infinite loop */
-        animation-delay: 1s; /* Initial delay */
+        animation: continuousShine 5s infinite linear; /* Slower animation */
+        animation-delay: 1s;
     }
 
-    /* Credit Subtitle - Animated Gradient Text */
-    @keyframes textGradientAnimation {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
+    /* Credit Subtitle - Subtle Pulse Effect */
+    @keyframes pulseTextColor {
+        0% { color: var(--text-medium); opacity: 0.8; }
+        50% { color: var(--text-light); opacity: 1; }
+        100% { color: var(--text-medium); opacity: 0.8; }
     }
     .credit-subtitle {
         font-size: 1rem;
-        font-weight: 400; /* Slightly bolder for the effect */
+        font-weight: 400;
         margin-top: 0.3rem;
-        display: inline-block; /* For background clip */
-        background: linear-gradient(to right, 
-            var(--finance-color), 
-            var(--accounting-color), 
-            var(--cdg-color), 
-            var(--mfb-color), 
-            var(--management-color), 
-            var(--marketing-color),
-            var(--finance-color) /* Loop back to first color for smooth transition */
-        );
-        background-size: 300% 100%; /* Make gradient wider than text */
-        -webkit-background-clip: text;
-        -moz-background-clip: text;
-        -webkit-text-fill-color: transparent; 
-        -moz-text-fill-color: transparent;
-        animation: textGradientAnimation 15s ease infinite; /* 15s for a slow, smooth cycle */
+        display: inline-block;
+        animation: pulseTextColor 4s ease-in-out infinite;
     }
     
-    /* General Section Styling */
-    .branch-section-content {
-        padding-top: 1rem;
+    /* Sidebar Styling for Branch Selection */
+    [data-testid="stSidebar"] {
+        background-color: var(--bg-content);
+        padding: 1.5rem 1rem;
     }
-
-    /* MAIN BRANCH Tab Styling (st.tabs at the top level) - Mobile Friendly */
-    div[data-testid="stTabs"] > div[role="tablist"] { 
-        display: flex;
-        /* justify-content: center; /* Remove for scrolling */
-        overflow-x: auto; /* Enable horizontal scrolling */
-        overflow-y: hidden; /* Prevent vertical scrollbar */
-        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-        white-space: nowrap; /* Prevent tabs from wrapping */
-        margin-bottom: 2rem; 
-        border-bottom: 2px solid var(--border-color); 
-        padding-bottom: 0.5rem;
-        padding-left: 10px; /* Some padding so first tab isn't at edge */
-        padding-right: 10px;/* Some padding so last tab isn't at edge */
+    [data-testid="stSidebar"] .stSelectbox label { /* Selectbox label */
+        color: var(--text-light) !important;
+        font-weight: 600 !important;
+        font-size: 1.1rem !important;
+        margin-bottom: 0.8rem !important;
     }
-    div[data-testid="stTabs"] > div[role="tablist"]::-webkit-scrollbar {
-        height: 4px; /* Thin scrollbar */
-    }
-    div[data-testid="stTabs"] > div[role="tablist"]::-webkit-scrollbar-thumb {
-        background: var(--border-color); 
-        border-radius: 10px;
-    }
-    div[data-testid="stTabs"] > div[role="tablist"] > button[role="tab"] { 
-        font-family: var(--font-family);
-        font-size: 1.05rem; /* Slightly smaller for more tabs on screen */
-        font-weight: 600 !important; 
-        color: var(--text-medium) !important;
-        background-color: transparent !important;
-        border: none !important;
-        padding: 0.8rem 1.2rem !important; /* Adjusted padding */
-        margin: 0 0.3rem !important; 
-        border-radius: 8px 8px 0 0 !important; 
-        transition: color 0.3s ease, border-bottom-color 0.3s ease;
-        border-bottom: 3px solid transparent !important; 
-        flex-shrink: 0; /* Prevent tabs from shrinking */
-        display: inline-block; /* Ensure they behave with nowrap */
-    }
-    div[data-testid="stTabs"] > div[role="tablist"] > button[role="tab"]:hover {
+    [data-testid="stSidebar"] div[data-baseweb="select"] > div { /* Selectbox input area */
+        background-color: var(--bg-accent) !important;
+        border: 1px solid var(--border-color) !important;
+        border-radius: 6px !important;
         color: var(--text-light) !important;
     }
-    /* Active MAIN BRANCH tab styling */
-    .finance-section-active-main-tab { border-bottom-color: var(--finance-color) !important; color: var(--finance-color) !important; }
-    .accounting-section-active-main-tab { border-bottom-color: var(--accounting-color) !important; color: var(--accounting-color) !important; }
-    .cdg-section-active-main-tab { border-bottom-color: var(--cdg-color) !important; color: var(--cdg-color) !important; }
-    .mfb-section-active-main-tab { border-bottom-color: var(--mfb-color) !important; color: var(--mfb-color) !important; }
-    .management-section-active-main-tab { border-bottom-color: var(--management-color) !important; color: var(--management-color) !important; }
-    .marketing-section-active-main-tab { border-bottom-color: var(--marketing-color) !important; color: var(--marketing-color) !important; }
-    /* Default active state if no specific class is applied (fallback) */
-    div[data-testid="stTabs"] > div[role="tablist"] > button[role="tab"][aria-selected="true"] {
-        color: var(--text-light) !important;
-        border-bottom-color: var(--text-light) !important;
+    [data-testid="stSidebar"] div[data-baseweb="select"] svg { /* Dropdown arrow */
+        fill: var(--text-light) !important;
     }
+    /* For the dropdown list items (harder to style precisely) */
+    /* Streamlit's dropdown list is in a separate portal */
 
 
-    /* SEMESTER Tab Styling (within each branch) */
-    .stTabs { 
-        border-radius: 8px;
-        overflow: hidden;
-    }
-    .stTabs [data-baseweb="tab-list"] {
+    /* SEMESTER Tab Styling (within each branch content area) */
+    /* This will now be in the main content area after branch selection */
+    .semester-tabs-container .stTabs [data-baseweb="tab-list"] {
         background-color: var(--bg-accent);
         padding: 0.4rem;
         border-radius: 8px;
         display: flex;
         justify-content: center;
+        margin-top: 1rem; /* Space above semester tabs */
+        margin-bottom: 1rem;
     }
-    .stTabs [role="tab"] {
+    .semester-tabs-container .stTabs [role="tab"] {
         font-family: var(--font-family);
         font-size: 1rem;
         font-weight: 500;
@@ -184,16 +135,19 @@ st.markdown("""
         border-radius: 6px;
         transition: background-color 0.3s ease, color 0.3s ease;
     }
-    .stTabs [role="tab"]:hover {
+    .semester-tabs-container .stTabs [role="tab"]:hover {
         color: var(--text-light);
         background-color: #3e3e5a; 
     }
-    .finance-section .stTabs [role="tab"][aria-selected="true"] { background-color: var(--finance-color); color: white !important; }
-    .accounting-section .stTabs [role="tab"][aria-selected="true"] { background-color: var(--accounting-color); color: white !important; }
-    .cdg-section .stTabs [role="tab"][aria-selected="true"] { background-color: var(--cdg-color); color: white !important; }
-    .mfb-section .stTabs [role="tab"][aria-selected="true"] { background-color: var(--mfb-color); color: white !important; }
-    .management-section .stTabs [role="tab"][aria-selected="true"] { background-color: var(--management-color); color: white !important; }
-    .marketing-section .stTabs [role="tab"][aria-selected="true"] { background-color: var(--marketing-color); color: white !important; }
+    /* Active SEMESTER tab styling needs to be dynamic based on selected_branch_key_prefix */
+    /* This will be handled by adding a class to semester-tabs-container in Python */
+    .finance-active-sem-tabs .stTabs [role="tab"][aria-selected="true"] { background-color: var(--finance-color); color: white !important; }
+    .accounting-active-sem-tabs .stTabs [role="tab"][aria-selected="true"] { background-color: var(--accounting-color); color: white !important; }
+    .cdg-active-sem-tabs .stTabs [role="tab"][aria-selected="true"] { background-color: var(--cdg-color); color: white !important; }
+    .mfb-active-sem-tabs .stTabs [role="tab"][aria-selected="true"] { background-color: var(--mfb-color); color: white !important; }
+    .management-active-sem-tabs .stTabs [role="tab"][aria-selected="true"] { background-color: var(--management-color); color: white !important; }
+    .marketing-active-sem-tabs .stTabs [role="tab"][aria-selected="true"] { background-color: var(--marketing-color); color: white !important; }
+
 
     /* Subject Header */
     .subject-header {
@@ -219,7 +173,7 @@ st.markdown("""
         display: block;
     }
 
-    /* Button Styling */
+    /* Button Styling (will need dynamic color based on selected branch) */
     .stButton > button {
         width: 100%; 
         color: white !important;
@@ -232,6 +186,7 @@ st.markdown("""
         transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
         box-shadow: 0 3px 6px var(--shadow-color);
         margin-top: 1.5rem;
+        /* Background color will be set dynamically in Python */
     }
     .stButton > button:hover {
         opacity: 0.9;
@@ -242,12 +197,6 @@ st.markdown("""
         transform: translateY(0px);
         box-shadow: 0 2px 4px var(--shadow-color);
     }
-    .finance-section .stButton > button { background-color: var(--finance-color); }
-    .accounting-section .stButton > button { background-color: var(--accounting-color); }
-    .cdg-section .stButton > button { background-color: var(--cdg-color); }
-    .mfb-section .stButton > button { background-color: var(--mfb-color); }
-    .management-section .stButton > button { background-color: var(--management-color); }
-    .marketing-section .stButton > button { background-color: var(--marketing-color); }
 
     /* Result Box Styling */
     .modern-result-box-container { 
@@ -294,24 +243,6 @@ st.markdown("""
         margin-bottom: 2rem;
     }
     
-    /* Corner GIF Styles - Optional */
-    .corner-gif {
-        position: fixed;
-        z-index: 9990; 
-        width: 65px; 
-        height: 65px;
-        border-radius: 8px;
-        box-shadow: 0 3px 7px rgba(0,0,0,0.3);
-        opacity: 0.65;
-        transition: opacity 0.3s ease, transform 0.3s ease;
-    }
-    .finance-corner-gif { top: 80px; right: 20px; }
-    .accounting-corner-gif { top: 155px; right: 20px; }
-    .corner-gif:hover {
-        opacity: 0.9;
-        transform: scale(1.05);
-    }
-
     /* Footer Styling */
     .modern-footer {
         text-align: center;
@@ -332,18 +263,19 @@ st.markdown("""
 # --- Main Title ---
 st.markdown("""
     <div class="title-area-container">
-        <h1 class="interactive-main-title">Master 2 Grade Calculator</h1>
+        <h1 class="interactive-main-title">Grade Calculator</h1>
         <p class="credit-subtitle">By Sofiane Belkacem Nacer</p>
     </div>
     """, unsafe_allow_html=True)
 
-# --- GIFs (Optional) ---
-# finance_gif_html = """ <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fbestanimations.com%2FAnimals%2FMammals%2FCats%2Fcats%2Fcute-kitty-animated-gif-61.gif&f=1&nofb=1&ipt=9b9f49feca4c1a8d04b816cebb11048d1cba7254539b845380dd510c43cb5d4e" class="corner-gif finance-corner-gif" alt="Finance GIF">"""
-#accounting_gif_html = """<img src="https://media3.giphy.com/media/njON3jEmTYHEfRbfsk/200w.gif?cid=6c09b95286r0q4sdyv82fj0t6vx4gmmec7lipefp8jihytoe&ep=v1_stickers_search&rid=200w.gif&ct=s" class="corner-gif accounting-corner-gif" alt="Accounting GIF">"""
 
 BRANCH_COLORS = {
     "FIN": "var(--finance-color)", "ACC": "var(--accounting-color)", "CDG": "var(--cdg-color)",
     "MFB": "var(--mfb-color)", "MGT": "var(--management-color)", "MKT": "var(--marketing-color)",
+}
+BRANCH_ACTIVE_SEM_TAB_CLASSES = {
+    "FIN": "finance-active-sem-tabs", "ACC": "accounting-active-sem-tabs", "CDG": "cdg-active-sem-tabs",
+    "MFB": "mfb-active-sem-tabs", "MGT": "management-active-sem-tabs", "MKT": "marketing-active-sem-tabs",
 }
 
 # --- Subject Definitions (Capitalized - function from previous step) ---
@@ -509,128 +441,83 @@ def calculate_semester_average(semester_num_char, subjects_with_coef, session_st
 def display_semester_subjects_ui(subjects_dict, semester_id_str, spec_key_prefix):
     title_semester_num = semester_id_str[-1]
     branch_color_var = BRANCH_COLORS.get(spec_key_prefix, "var(--text-light)")
+    
+    # Semester Title
     st.markdown(f"<h2 class='semester-title' style='color: {branch_color_var};'>{semester_id_str.replace('S', 'Semestre ')}</h2>", unsafe_allow_html=True)
+    
     session_state_key_prefix_for_widgets = f"{spec_key_prefix}_{semester_id_str}_"
+    
     for subject_display_name, coef in subjects_dict.items():
-        border_color_css = f"color: {branch_color_var}; border-bottom-color: {branch_color_var.replace(')', ', 0.3)').replace('var(', 'rgba(') if 'var(' in branch_color_var else f'{branch_color_var}4D'};"
+        border_color_css = f"color: {branch_color_var}; border-bottom-color: {branch_color_var.replace(')', ', 0.4)').replace('var(', 'rgba(') if 'var(' in branch_color_var else f'{branch_color_var}66'};" # Slightly more opaque border
         st.markdown(f'<div class="subject-header" style="{border_color_css}">{subject_display_name} (Coef: {coef})</div>', unsafe_allow_html=True)
+        
         col_exam, col_td = st.columns(2)
         subject_key_part = normalize_key_part(subject_display_name)
         exam_key_full = f"{session_state_key_prefix_for_widgets}{subject_key_part}_exam"
         td_key_full = f"{session_state_key_prefix_for_widgets}{subject_key_part}_TD"
+        
         with col_exam:
-            st.number_input("Note Examen", key=exam_key_full, min_value=0.0, max_value=20.0, value=st.session_state.get(exam_key_full), step=0.05, format="%.2f") # Removed help
+            st.number_input("Note Examen", key=exam_key_full, min_value=0.0, max_value=20.0, value=st.session_state.get(exam_key_full), step=0.05, format="%.2f")
         with col_td:
-            st.number_input("Note TD", key=td_key_full, min_value=0.0, max_value=20.0, value=st.session_state.get(td_key_full), step=0.05, format="%.2f") # Removed help
+            st.number_input("Note TD", key=td_key_full, min_value=0.0, max_value=20.0, value=st.session_state.get(td_key_full), step=0.05, format="%.2f")
+            
     st.markdown("<br>", unsafe_allow_html=True) 
+    
     _, btn_col, _ = st.columns([1, 1.5, 1]) 
     with btn_col:
+        # Apply dynamic button color
+        st.markdown(f"""
+            <style>
+                div[data-testid="stVerticalBlock"] div[data-testid="stButton"] > button[kind="secondary"] {{
+                    background-color: {branch_color_var} !important;
+                }}
+            </style>
+        """, unsafe_allow_html=True)
         button_key = f"calculate_avg_{spec_key_prefix}_{semester_id_str}"
         button_text = f"Calculer Moyenne S{title_semester_num}"
         if st.button(button_text, key=button_key):
             calculate_semester_average(title_semester_num, subjects_dict, session_state_key_prefix_for_widgets)
 
-# --- Main Application Tabs ---
-main_app_tabs_names = [
+
+# --- Branch Configuration Data ---
+branch_display_names = [
     "Finance d'entreprise", "Comptabilité et finance", "Contrôle de gestion", 
-    "MFB", "Management", "Marketing"
+    "Monie, Finance et Banque", "Management", "Marketing"
 ]
-main_app_tabs = st.tabs(main_app_tabs_names)
-
-branch_configs = [
-    {"name": "Finance d'entreprise", "key_prefix": "FIN", "s1": finance_s1_subjects, "s2": finance_s2_subjects, "gif": finance_gif_html, "section_class": "finance-section", "active_tab_class": "finance-section-active-main-tab"},
-    {"name": "Comptabilité et finance", "key_prefix": "ACC", "s1": accounting_s1_subjects, "s2": accounting_s2_subjects, "gif": accounting_gif_html, "section_class": "accounting-section", "active_tab_class": "accounting-section-active-main-tab"},
-    {"name": "Contrôle de gestion", "key_prefix": "CDG", "s1": cdg_s1_subjects, "s2": cdg_s2_subjects, "gif": None, "section_class": "cdg-section", "active_tab_class": "cdg-section-active-main-tab"},
-    {"name": "MFB", "key_prefix": "MFB", "s1": mfb_s1_subjects, "s2": mfb_s2_subjects, "gif": None, "section_class": "mfb-section", "active_tab_class": "mfb-section-active-main-tab"},
-    {"name": "Management", "key_prefix": "MGT", "s1": management_s1_subjects, "s2": management_s2_subjects, "gif": None, "section_class": "management-section", "active_tab_class": "management-section-active-main-tab"},
-    {"name": "Marketing", "key_prefix": "MKT", "s1": marketing_s1_subjects, "s2": marketing_s2_subjects, "gif": None, "section_class": "marketing-section", "active_tab_class": "marketing-section-active-main-tab"},
-]
-
-# JavaScript to apply active class to main tab. This is a more robust way.
-# We can't directly change the class of the st.tabs button from Python after it's rendered.
-# So we'll use JS to find the selected tab and add our custom class.
-# This JS will run once when the script is executed. For dynamic updates if Streamlit
-# re-renders tabs without full script re-run, a more complex observer might be needed.
-js_to_style_active_tab = """
-<script>
-function styleActiveMainTab() {
-    // Remove existing active classes from all main tabs
-    const allMainTabs = parent.document.querySelectorAll('div[data-testid="stTabs"] > div[role="tablist"] > button[role="tab"]');
-    allMainTabs.forEach(tab => {
-        tab.classList.remove(
-            'finance-section-active-main-tab', 
-            'accounting-section-active-main-tab',
-            'cdg-section-active-main-tab',
-            'mfb-section-active-main-tab',
-            'management-section-active-main-tab',
-            'marketing-section-active-main-tab'
-        );
-    });
-
-    // Find the currently selected main tab
-    const selectedMainTab = parent.document.querySelector('div[data-testid="stTabs"] > div[role="tablist"] > button[role="tab"][aria-selected="true"]');
-    
-    if (selectedMainTab) {
-        const tabText = selectedMainTab.textContent.trim();
-        let activeClass = '';
-        if (tabText === "Finance d'entreprise") activeClass = 'finance-section-active-main-tab';
-        else if (tabText === "Comptabilité et finance") activeClass = 'accounting-section-active-main-tab';
-        else if (tabText === "Contrôle de gestion") activeClass = 'cdg-section-active-main-tab';
-        else if (tabText === "MFB") activeClass = 'mfb-section-active-main-tab';
-        else if (tabText === "Management") activeClass = 'management-section-active-main-tab';
-        else if (tabText === "Marketing") activeClass = 'marketing-section-active-main-tab';
-        
-        if (activeClass) {
-            selectedMainTab.classList.add(activeClass);
-        }
-    }
+branch_data_map = {
+    "Finance d'entreprise": {"key_prefix": "FIN", "s1": finance_s1_subjects, "s2": finance_s2_subjects},
+    "Comptabilité et finance": {"key_prefix": "ACC", "s1": accounting_s1_subjects, "s2": accounting_s2_subjects},
+    "Contrôle de gestion": {"key_prefix": "CDG", "s1": cdg_s1_subjects, "s2": cdg_s2_subjects},
+    "Monie, Finance et Banque": {"key_prefix": "MFB", "s1": mfb_s1_subjects, "s2": mfb_s2_subjects},
+    "Management": {"key_prefix": "MGT", "s1": management_s1_subjects, "s2": management_s2_subjects},
+    "Marketing": {"key_prefix": "MKT", "s1": marketing_s1_subjects, "s2": marketing_s2_subjects},
 }
 
-// Run on initial load
-styleActiveMainTab();
+# --- Sidebar for Branch Selection ---
+with st.sidebar:
+    st.markdown("## Sélectionnez une Branche", unsafe_allow_html=True)
+    selected_branch_name = st.selectbox(
+        label="Branche d'études:", # Label for the selectbox
+        options=branch_display_names,
+        index=0, # Default to the first branch
+        label_visibility="collapsed" # Hide the default Streamlit label, use markdown above
+    )
 
-// Rerun if Streamlit re-renders (e.g., after button click if tabs are part of the re-render scope)
-// This is a bit of a guess if Streamlit re-renders the tablist buttons themselves.
-// A MutationObserver would be more robust but also more complex.
-const streamlitDoc = parent.document;
-if (streamlitDoc) {
-    const observer = new MutationObserver(function(mutationsList, observer) {
-        for(const mutation of mutationsList) {
-            if (mutation.type === 'childList' || mutation.type === 'attributes') {
-                // Check if the stTabs element itself was modified, or its attributes
-                if (mutation.target.closest('div[data-testid="stTabs"]')) {
-                     styleActiveMainTab();
-                     // console.log("Tabs possibly re-rendered, restyling active tab.");
-                }
-            }
-        }
-    });
-    observer.observe(streamlitDoc.body, { attributes: true, childList: true, subtree: true });
-}
+# --- Main Content Area ---
+if selected_branch_name:
+    branch_config = branch_data_map[selected_branch_name]
+    selected_branch_key_prefix = branch_config["key_prefix"]
+    active_sem_tab_class = BRANCH_ACTIVE_SEM_TAB_CLASSES.get(selected_branch_key_prefix, "")
 
-</script>
-"""
-st.components.v1.html(js_to_style_active_tab, height=0)
-
-
-for i, tab_content_container in enumerate(main_app_tabs):
-    with tab_content_container:
-        branch_config = branch_configs[i]
-        st.markdown(f'<div class="{branch_config["section_class"]}">', unsafe_allow_html=True)
-        #if branch_config["gif"]: 
-           # st.markdown(branch_config["gif"], unsafe_allow_html=True)
-        
-        col_padding1, col_content_area, col_padding2 = st.columns([0.25, 2.5, 0.25])
-
-        with col_content_area:
-            st.markdown('<div class="branch-section-content">', unsafe_allow_html=True)
-            semester_sub_tabs = st.tabs([f"Semestre {s}" for s in [1,2]]) # Cleaner tab names
-            with semester_sub_tabs[0]:
-                display_semester_subjects_ui(branch_config["s1"], "S1", branch_config["key_prefix"])
-            with semester_sub_tabs[1]:
-                display_semester_subjects_ui(branch_config["s2"], "S2", branch_config["key_prefix"])
-            st.markdown('</div>', unsafe_allow_html=True) 
-
+    # Center content and apply dynamic class for semester tab styling
+    col_padding1, col_content_area, col_padding2 = st.columns([0.15, 2.7, 0.15]) # Wider content area
+    with col_content_area:
+        st.markdown(f'<div class="semester-tabs-container {active_sem_tab_class}">', unsafe_allow_html=True)
+        semester_sub_tabs = st.tabs([f"Semestre {s}" for s in [1,2]])
+        with semester_sub_tabs[0]:
+            display_semester_subjects_ui(branch_config["s1"], "S1", selected_branch_key_prefix)
+        with semester_sub_tabs[1]:
+            display_semester_subjects_ui(branch_config["s2"], "S2", selected_branch_key_prefix)
         st.markdown('</div>', unsafe_allow_html=True)
 
 # --- Footer ---
