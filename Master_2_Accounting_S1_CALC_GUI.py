@@ -2,9 +2,10 @@ import streamlit as st
 
 # --- Page Configuration ---
 st.set_page_config(
-    page_title=" Master 2 - Grade Calculator",
+    page_title="Grade Calculator",
     page_icon="https://cdn-icons-png.flaticon.com/512/2909/2909988.png",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="expanded" # Keep sidebar open by default on desktop
 )
 
 # --- CSS Styling ---
@@ -29,6 +30,8 @@ st.markdown("""
         --bg-accent: #2C2C3E;  
         --border-color: #3A3A5A;
         --shadow-color: rgba(0, 0, 0, 0.25);
+        --glow-color-primary: #ffffff; /* For the main glow */
+        --glow-color-secondary: #d89cf6; /* Accent glow color - from your example */
     }
 
     body {
@@ -38,40 +41,25 @@ st.markdown("""
         line-height: 1.6;
     }
 
-    /* Main Title Styling - Continuous Shine */
+    /* Main Title Styling - Glowing Text Effect */
     .title-area-container {
         text-align: center;
         margin-top: 2rem;
         margin-bottom: 2.5rem;
     }
-
-    @keyframes continuousShine {
-        0% { left: -120%; } /* Start further left */
-        40% { left: 140%; } /* Sweep across */
-        100% { left: 140%; } /* Hold before reset (effective pause) */
-    }
-
     .interactive-main-title {
-        font-size: 2.8rem;
-        font-weight: 700; 
-        color: var(--text-light);
+        font-size: 3rem; /* Increased size */
+        font-weight: 700;
+        color: var(--glow-color-primary); /* Base color for the text */
+        text-shadow: 
+            0 0 6px var(--glow-color-primary),   /* Innermost, brightest glow */
+            0 0 12px var(--glow-color-secondary), /* Middle accent glow */
+            0 0 20px var(--glow-color-secondary); /* Outer, softer accent glow */
+        text-align: center;
         margin-bottom: 0.4rem;
-        letter-spacing: 1px; 
-        display: inline-block; 
-        position: relative; 
-        overflow: hidden;
-    }
-    .interactive-main-title::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -120%; 
-        width: 50%; 
-        height: 100%;
-        background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
-        transform: skewX(-25deg); 
-        animation: continuousShine 5s infinite linear; /* Slower animation */
-        animation-delay: 1s;
+        letter-spacing: 1.5px; /* Slightly more spacing */
+        font-family: var(--font-family);
+        display: inline-block; /* Helps with text-shadow rendering in some cases */
     }
 
     /* Credit Subtitle - Subtle Pulse Effect */
@@ -92,36 +80,39 @@ st.markdown("""
     [data-testid="stSidebar"] {
         background-color: var(--bg-content);
         padding: 1.5rem 1rem;
+        border-right: 1px solid var(--border-color); /* Add a subtle border */
     }
-    [data-testid="stSidebar"] .stSelectbox label { /* Selectbox label */
+    .sidebar-header { /* Custom header for the selectbox */
         color: var(--text-light) !important;
         font-weight: 600 !important;
-        font-size: 1.1rem !important;
-        margin-bottom: 0.8rem !important;
+        font-size: 1.2rem !important; /* More prominent */
+        margin-bottom: 1rem !important;
+        text-align: left;
+        padding-left: 0.2rem;
     }
-    [data-testid="stSidebar"] div[data-baseweb="select"] > div { /* Selectbox input area */
+    [data-testid="stSidebar"] .stSelectbox > label { /* Hide default label */
+        display: none;
+    }
+    [data-testid="stSidebar"] div[data-baseweb="select"] > div { 
         background-color: var(--bg-accent) !important;
         border: 1px solid var(--border-color) !important;
-        border-radius: 6px !important;
+        border-radius: 8px !important; /* More rounded */
         color: var(--text-light) !important;
+        font-size: 1rem;
     }
-    [data-testid="stSidebar"] div[data-baseweb="select"] svg { /* Dropdown arrow */
+    [data-testid="stSidebar"] div[data-baseweb="select"] svg { 
         fill: var(--text-light) !important;
     }
-    /* For the dropdown list items (harder to style precisely) */
-    /* Streamlit's dropdown list is in a separate portal */
 
-
-    /* SEMESTER Tab Styling (within each branch content area) */
-    /* This will now be in the main content area after branch selection */
+    /* SEMESTER Tab Styling */
     .semester-tabs-container .stTabs [data-baseweb="tab-list"] {
         background-color: var(--bg-accent);
         padding: 0.4rem;
         border-radius: 8px;
         display: flex;
         justify-content: center;
-        margin-top: 1rem; /* Space above semester tabs */
-        margin-bottom: 1rem;
+        margin-top: 1rem; 
+        margin-bottom: 1.5rem; /* Increased margin */
     }
     .semester-tabs-container .stTabs [role="tab"] {
         font-family: var(--font-family);
@@ -139,8 +130,6 @@ st.markdown("""
         color: var(--text-light);
         background-color: #3e3e5a; 
     }
-    /* Active SEMESTER tab styling needs to be dynamic based on selected_branch_key_prefix */
-    /* This will be handled by adding a class to semester-tabs-container in Python */
     .finance-active-sem-tabs .stTabs [role="tab"][aria-selected="true"] { background-color: var(--finance-color); color: white !important; }
     .accounting-active-sem-tabs .stTabs [role="tab"][aria-selected="true"] { background-color: var(--accounting-color); color: white !important; }
     .cdg-active-sem-tabs .stTabs [role="tab"][aria-selected="true"] { background-color: var(--cdg-color); color: white !important; }
@@ -173,7 +162,7 @@ st.markdown("""
         display: block;
     }
 
-    /* Button Styling (will need dynamic color based on selected branch) */
+    /* Button Styling */
     .stButton > button {
         width: 100%; 
         color: white !important;
@@ -186,7 +175,6 @@ st.markdown("""
         transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
         box-shadow: 0 3px 6px var(--shadow-color);
         margin-top: 1.5rem;
-        /* Background color will be set dynamically in Python */
     }
     .stButton > button:hover {
         opacity: 0.9;
@@ -234,7 +222,7 @@ st.markdown("""
         font-weight: 600; 
     }
 
-    /* Semester Title (S1/S2) within each tab content */
+    /* Semester Title */
     .semester-title {
         text-align: center;
         font-size: 1.8rem; 
@@ -263,7 +251,7 @@ st.markdown("""
 # --- Main Title ---
 st.markdown("""
     <div class="title-area-container">
-        <h1 class="interactive-main-title">Master 2<br>Grade Calculator</h1>
+        <h1 class="interactive-main-title">Grade Calculator</h1>
         <p class="credit-subtitle">By Sofiane Belkacem Nacer</p>
     </div>
     """, unsafe_allow_html=True)
@@ -278,8 +266,8 @@ BRANCH_ACTIVE_SEM_TAB_CLASSES = {
     "MFB": "mfb-active-sem-tabs", "MGT": "management-active-sem-tabs", "MKT": "marketing-active-sem-tabs",
 }
 
-# --- Subject Definitions (Capitalized - function from previous step) ---
-def capitalize_module_name(name):
+# --- Subject Definitions (Capitalized) ---
+def capitalize_module_name(name): # Function from previous step, unchanged
     words = []
     for word_idx, word in enumerate(name.split(' ')):
         if word.lower() in ["de", "la", "des", "et", "à", "l", "d"] and word_idx > 0:
@@ -380,7 +368,7 @@ all_subjects_config = {
     "MKT_S1": marketing_s1_subjects, "MKT_S2": marketing_s2_subjects
 }
 
-def normalize_key_part(text):
+def normalize_key_part(text): # Function from previous step, unchanged
     text_lower = text.lower()
     return text_lower.replace(" ", "_").replace("'", "").replace("-", "_").replace("é", "e").replace("è", "e").replace("ê", "e").replace("à", "a").replace("ç", "c").replace("ô", "o").replace("û", "u")
 
@@ -392,7 +380,7 @@ for config_key_prefix, subjects_dict in all_subjects_config.items():
         if exam_key not in st.session_state: st.session_state[exam_key] = None
         if td_key not in st.session_state: st.session_state[td_key] = None
 
-# --- Calculation Function ---
+# --- Calculation Function (unchanged from previous step) ---
 def calculate_semester_average(semester_num_char, subjects_with_coef, session_state_key_prefix):
     subjects_data = {}
     valid_input = True
@@ -442,39 +430,54 @@ def display_semester_subjects_ui(subjects_dict, semester_id_str, spec_key_prefix
     title_semester_num = semester_id_str[-1]
     branch_color_var = BRANCH_COLORS.get(spec_key_prefix, "var(--text-light)")
     
-    # Semester Title
     st.markdown(f"<h2 class='semester-title' style='color: {branch_color_var};'>{semester_id_str.replace('S', 'Semestre ')}</h2>", unsafe_allow_html=True)
-    
     session_state_key_prefix_for_widgets = f"{spec_key_prefix}_{semester_id_str}_"
     
     for subject_display_name, coef in subjects_dict.items():
-        border_color_css = f"color: {branch_color_var}; border-bottom-color: {branch_color_var.replace(')', ', 0.4)').replace('var(', 'rgba(') if 'var(' in branch_color_var else f'{branch_color_var}66'};" # Slightly more opaque border
+        border_color_css = f"color: {branch_color_var}; border-bottom-color: {branch_color_var.replace(')', ', 0.4)').replace('var(', 'rgba(') if 'var(' in branch_color_var else f'{branch_color_var}66'};"
         st.markdown(f'<div class="subject-header" style="{border_color_css}">{subject_display_name} (Coef: {coef})</div>', unsafe_allow_html=True)
-        
         col_exam, col_td = st.columns(2)
         subject_key_part = normalize_key_part(subject_display_name)
         exam_key_full = f"{session_state_key_prefix_for_widgets}{subject_key_part}_exam"
         td_key_full = f"{session_state_key_prefix_for_widgets}{subject_key_part}_TD"
-        
         with col_exam:
             st.number_input("Note Examen", key=exam_key_full, min_value=0.0, max_value=20.0, value=st.session_state.get(exam_key_full), step=0.05, format="%.2f")
         with col_td:
             st.number_input("Note TD", key=td_key_full, min_value=0.0, max_value=20.0, value=st.session_state.get(td_key_full), step=0.05, format="%.2f")
-            
     st.markdown("<br>", unsafe_allow_html=True) 
     
-    _, btn_col, _ = st.columns([1, 1.5, 1]) 
+    _, btn_col, _ = st.columns([0.8, 1.4, 0.8]) # Adjusted button column width slightly for centering
     with btn_col:
         # Apply dynamic button color
-        st.markdown(f"""
+        button_style_html = f"""
             <style>
-                div[data-testid="stVerticalBlock"] div[data-testid="stButton"] > button[kind="secondary"] {{
+                #{st.session_state.get(f'button_container_id_{spec_key_prefix}_{semester_id_str}', 'none')} .stButton > button {{
                     background-color: {branch_color_var} !important;
                 }}
             </style>
-        """, unsafe_allow_html=True)
+        """
+        # To make this specific style injection work for each button uniquely, we need a unique ID for its container
+        # Streamlit doesn't allow setting IDs on st.button directly. We can wrap it in a container.
+        # However, a simpler approach might be to just let the general button styling apply if dynamic color
+        # per button becomes too complex with this structure.
+        # For now, this injected style might apply too broadly or not specifically enough.
+        # A better way is to add a class to the button's PARENT container if possible, or use more specific CSS.
+        # Let's try with a more general approach: if the dynamic styling via parent class on semester-tabs-container
+        # is sufficient, or live with one button color if not.
+        # For this iteration, the CSS for buttons per section is removed, relying on a general style or later dynamic class.
+        # The below st.markdown(button_style_html) is commented out as it's hard to target specific buttons.
+        # st.markdown(button_style_html, unsafe_allow_html=True)
+
+
         button_key = f"calculate_avg_{spec_key_prefix}_{semester_id_str}"
         button_text = f"Calculer Moyenne S{title_semester_num}"
+
+        # General button style with specific color applied via a parent class on the section
+        # We need to add a class to the button's container or the main section div.
+        # For simplicity, let's define button colors directly in main CSS based on parent branch section.
+        # Re-add section specific button styles in main CSS:
+        # e.g., .finance-content .stButton > button { background-color: var(--finance-color); }
+
         if st.button(button_text, key=button_key):
             calculate_semester_average(title_semester_num, subjects_dict, session_state_key_prefix_for_widgets)
 
@@ -485,40 +488,53 @@ branch_display_names = [
     "Monie, Finance et Banque", "Management", "Marketing"
 ]
 branch_data_map = {
-    "Finance d'entreprise": {"key_prefix": "FIN", "s1": finance_s1_subjects, "s2": finance_s2_subjects},
-    "Comptabilité et finance": {"key_prefix": "ACC", "s1": accounting_s1_subjects, "s2": accounting_s2_subjects},
-    "Contrôle de gestion": {"key_prefix": "CDG", "s1": cdg_s1_subjects, "s2": cdg_s2_subjects},
-    "Monie, Finance et Banque": {"key_prefix": "MFB", "s1": mfb_s1_subjects, "s2": mfb_s2_subjects},
-    "Management": {"key_prefix": "MGT", "s1": management_s1_subjects, "s2": management_s2_subjects},
-    "Marketing": {"key_prefix": "MKT", "s1": marketing_s1_subjects, "s2": marketing_s2_subjects},
+    "Finance d'entreprise": {"key_prefix": "FIN", "s1": finance_s1_subjects, "s2": finance_s2_subjects, "css_class_prefix": "finance"},
+    "Comptabilité et finance": {"key_prefix": "ACC", "s1": accounting_s1_subjects, "s2": accounting_s2_subjects, "css_class_prefix": "accounting"},
+    "Contrôle de gestion": {"key_prefix": "CDG", "s1": cdg_s1_subjects, "s2": cdg_s2_subjects, "css_class_prefix": "cdg"},
+    "Monie, Finance et Banque": {"key_prefix": "MFB", "s1": mfb_s1_subjects, "s2": mfb_s2_subjects, "css_class_prefix": "mfb"},
+    "Management": {"key_prefix": "MGT", "s1": management_s1_subjects, "s2": management_s2_subjects, "css_class_prefix": "management"},
+    "Marketing": {"key_prefix": "MKT", "s1": marketing_s1_subjects, "s2": marketing_s2_subjects, "css_class_prefix": "marketing"},
 }
 
 # --- Sidebar for Branch Selection ---
 with st.sidebar:
-    st.markdown("## Sélectionnez une Branche", unsafe_allow_html=True)
+    # Use st.markdown for a styled header instead of the default selectbox label
+    st.markdown("<p class='sidebar-header'>Choisir la Spécialité</p>", unsafe_allow_html=True)
     selected_branch_name = st.selectbox(
-        label="Branche d'études:", # Label for the selectbox
+        label=".", # Dummy label, actual label is the markdown above
         options=branch_display_names,
-        index=0, # Default to the first branch
-        label_visibility="collapsed" # Hide the default Streamlit label, use markdown above
+        index=0, 
+        label_visibility="collapsed" 
     )
 
 # --- Main Content Area ---
 if selected_branch_name:
     branch_config = branch_data_map[selected_branch_name]
     selected_branch_key_prefix = branch_config["key_prefix"]
-    active_sem_tab_class = BRANCH_ACTIVE_SEM_TAB_CLASSES.get(selected_branch_key_prefix, "")
+    # This class will be used by CSS to style semester tabs and buttons for the selected branch
+    dynamic_content_class = f"{branch_config['css_class_prefix']}-active-sem-tabs" 
 
-    # Center content and apply dynamic class for semester tab styling
-    col_padding1, col_content_area, col_padding2 = st.columns([0.15, 2.7, 0.15]) # Wider content area
+    col_padding1, col_content_area, col_padding2 = st.columns([0.15, 2.7, 0.15])
     with col_content_area:
-        st.markdown(f'<div class="semester-tabs-container {active_sem_tab_class}">', unsafe_allow_html=True)
+        # Apply the dynamic class to this container for styling child elements
+        st.markdown(f'<div class="semester-tabs-container {dynamic_content_class}">', unsafe_allow_html=True)
+        
+        # Add section-specific button styling here, applied to the whole content area
+        # This ensures buttons within this section get the right color.
+        st.markdown(f"""
+            <style>
+                .{dynamic_content_class} .stButton > button {{
+                    background-color: {BRANCH_COLORS[selected_branch_key_prefix]} !important;
+                }}
+            </style>
+        """, unsafe_allow_html=True)
+
         semester_sub_tabs = st.tabs([f"Semestre {s}" for s in [1,2]])
         with semester_sub_tabs[0]:
             display_semester_subjects_ui(branch_config["s1"], "S1", selected_branch_key_prefix)
         with semester_sub_tabs[1]:
             display_semester_subjects_ui(branch_config["s2"], "S2", selected_branch_key_prefix)
-        st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True) # Close semester-tabs-container
 
 # --- Footer ---
 st.markdown("""
