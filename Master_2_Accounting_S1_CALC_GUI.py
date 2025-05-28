@@ -120,7 +120,20 @@ st.markdown("""
     .mfb-section .s2-header-color, .mfb-section .subject-header.s2-header-color {
         color: #4A90E2; /* Same Blue for S2 MFB */
     }
-    /* No specific GIF for CDG or MFB for now to avoid clutter */
+
+    /* Management Section Styles */
+    .management-section .stButton > button {
+        width: 100%;
+        background-color: #38A169; /* Vibrant Green */
+        color: white;
+    }
+    .management-section .subject-header {
+        color: #38A169; /* Vibrant Green */
+    }
+    .management-section .s2-header-color, .management-section .subject-header.s2-header-color {
+        color: #38A169; /* Same Vibrant Green for S2 Management */
+    }
+    /* No specific GIF for CDG, MFB, or Management for now to avoid clutter */
 
     </style>
     """, unsafe_allow_html=True)
@@ -177,32 +190,46 @@ cdg_s2_subjects = {
     "Diagnostic d'entreprise par l'approche de la qualité totale": 1.5, "Techniques de sondage": 3,
     "Mesures de performance": 1.5, "Tableau de bord": 1.5, "Droit pénal des affaires": 3
 }
-
-# Monie, Finance et Banque Subjects
 mfb_s1_subjects = {
-    "Théorie financière": 3,
-    "Séries temporelle": 3,
-    "Technique bancaires": 3,
-    "Macroéconomie profonde": 3,
-    "Management des opérations": 3,
-    "Economie des intermédiaires financiers": 3,
-    "Stratégie d'entreprise": 3,
-    "Marché des capitaux et évaluation des actifs financiers": 3,
-    "Systèmes d'information de gestion": 3,
-    "contrôle de gestion": 3
+    "Théorie financière": 3, "Séries temporelle": 3, "Technique bancaires": 3,
+    "Macroéconomie profonde": 3, "Management des opérations": 3, "Economie des intermédiaires financiers": 3,
+    "Stratégie d'entreprise": 3, "Marché des capitaux et évaluation des actifs financiers": 3,
+    "Systèmes d'information de gestion": 3, "contrôle de gestion": 3
 }
 mfb_s2_subjects = {
-    "Gestion de portefeuille": 3,
-    "Droit pénal des affaires": 3,
+    "Gestion de portefeuille": 3, "Droit pénal des affaires": 3, "Stage": 3,
+    "Évaluation des projets d'investissement": 3, "Economie monétaire": 3,
+    "Analyse et conception des systèmes d'information": 3, "modèles aléatoires": 3,
+    "Economie managériale": 3, "droit des banques, assurance, boursier": 3,
+    "finance islamique": 1.5, "Initiation méthodologie": 1.5
+}
+
+# Management Subjects
+management_s1_subjects = {
+    "Théorie de la décision et des jeux": 3,
+    "Finances publiques": 1.5,
+    "Culture d'entreprise": 1.5,
+    "Gouvernance d'entreprise": 3,
+    "Management public": 3,
+    "Stratégie d'entreprise": 3,
+    "Systèmes d'information de gestion": 3,
+    "Organisation de l'entreprise": 3,
+    "Management des ressources humaines": 3,
+    "Management des opérations": 3,
+    "contrôle de gestion": 3
+}
+management_s2_subjects = {
+    "techniques de sondage": 3,
+    "Animation et contrôle budgétaire": 3,
+    "Tableaux de bord et de mesures de la performance": 3,
     "Stage": 3,
-    "Évaluation des projets d'investissement": 3,
-    "Economie monétaire": 3,
+    "théories de la concurrence": 3,
+    "Communication d'entreprise": 3,
+    "Droit pénal des affaires": 3,
+    "Management de changement": 3,
+    "Comptabilité publique": 1.5,
     "Analyse et conception des systèmes d'information": 3,
-    "modèles aléatoires": 3,
-    "Economie managériale": 3,
-    "droit des banques, assurance, boursier": 3,
-    "finance islamique": 1.5,
-    "Initiation méthodologie": 1.5
+    "Initiation à la méthodologie": 1.5
 }
 
 # --- Session State Initialization ---
@@ -210,13 +237,16 @@ all_subjects_config = {
     "FIN_S1": finance_s1_subjects, "FIN_S2": finance_s2_subjects,
     "ACC_S1": accounting_s1_subjects, "ACC_S2": accounting_s2_subjects,
     "CDG_S1": cdg_s1_subjects, "CDG_S2": cdg_s2_subjects,
-    "MFB_S1": mfb_s1_subjects, "MFB_S2": mfb_s2_subjects # Added Monie, Finance et Banque
+    "MFB_S1": mfb_s1_subjects, "MFB_S2": mfb_s2_subjects,
+    "MGT_S1": management_s1_subjects, "MGT_S2": management_s2_subjects # Added Management
 }
 
 for config_key_prefix, subjects_dict in all_subjects_config.items():
     for subject in subjects_dict:
-        exam_key = f"{config_key_prefix}_{subject}_exam"
-        td_key = f"{config_key_prefix}_{subject}_TD"
+        # Use replace to handle potential spaces or special chars in subject names for keys
+        subject_key_part = subject.replace(" ", "_").replace("'", "").replace("é", "e").replace("è", "e").replace("à", "a").lower()
+        exam_key = f"{config_key_prefix}_{subject_key_part}_exam"
+        td_key = f"{config_key_prefix}_{subject_key_part}_TD"
         if exam_key not in st.session_state:
             st.session_state[exam_key] = None
         if td_key not in st.session_state:
@@ -228,8 +258,9 @@ def calculate_semester_average(semester_num_char, subjects_with_coef, session_st
     valid_input = True
     
     for subject, coef in subjects_with_coef.items():
-        exam_key = f"{session_state_key_prefix}{subject}_exam"
-        td_key = f"{session_state_key_prefix}{subject}_TD"
+        subject_key_part = subject.replace(" ", "_").replace("'", "").replace("é", "e").replace("è", "e").replace("à", "a").lower()
+        exam_key = f"{session_state_key_prefix}{subject_key_part}_exam"
+        td_key = f"{session_state_key_prefix}{subject_key_part}_TD"
         try:
             exam_grade = st.session_state.get(exam_key)
             td_grade = st.session_state.get(td_key)
@@ -301,8 +332,9 @@ def display_semester_subjects_ui(subjects_dict, semester_id_str, spec_key_prefix
         st.markdown(f'<div class="{header_class}">{subject} (Coef: {coef})</div>', unsafe_allow_html=True)
         
         col_exam, col_td = st.columns(2)
-        exam_key_full = f"{session_state_key_prefix_for_subject}{subject}_exam"
-        td_key_full = f"{session_state_key_prefix_for_subject}{subject}_TD"
+        subject_key_part = subject.replace(" ", "_").replace("'", "").replace("é", "e").replace("è", "e").replace("à", "a").lower()
+        exam_key_full = f"{session_state_key_prefix_for_subject}{subject_key_part}_exam"
+        td_key_full = f"{session_state_key_prefix_for_subject}{subject_key_part}_TD"
 
         with col_exam:
             st.number_input("Note Examen", key=exam_key_full, min_value=0.0, max_value=20.0, value=st.session_state.get(exam_key_full), step=0.05, format="%.2f", help="Note de l'examen (0-20)")
@@ -324,7 +356,7 @@ def display_semester_subjects_ui(subjects_dict, semester_id_str, spec_key_prefix
             calculate_semester_average(title_semester_num, subjects_dict, session_state_key_prefix_for_subject)
 
 # --- Main Application Tabs ---
-main_app_tabs = st.tabs(["Finance d'entreprise", "Comptabilité et finance", "Contrôle de gestion", "Monie, Finance et Banque"])
+main_app_tabs = st.tabs(["Finance d'entreprise", "Comptabilité et finance", "Contrôle de gestion", "Monie, Finance et Banque", "Management"])
 
 with main_app_tabs[0]: # Finance d'entreprise
     st.markdown('<div class="finance-section">', unsafe_allow_html=True)
@@ -367,7 +399,7 @@ with main_app_tabs[2]: # Contrôle de gestion
 with main_app_tabs[3]: # Monie, Finance et Banque
     st.markdown('<div class="mfb-section">', unsafe_allow_html=True)
     
-    _ , col_mfb_tabs_content, _ = st.columns([0.2, 2.6, 0.2]) # Consistent layout for sub-tabs
+    _ , col_mfb_tabs_content, _ = st.columns([0.2, 2.6, 0.2])
     with col_mfb_tabs_content:
         mfb_semester_sub_tabs = st.tabs(["Semestre 1", "Semestre 2"])
         with mfb_semester_sub_tabs[0]:
@@ -375,6 +407,19 @@ with main_app_tabs[3]: # Monie, Finance et Banque
         with mfb_semester_sub_tabs[1]:
             display_semester_subjects_ui(mfb_s2_subjects, "S2", "MFB", is_s2_tab=True)
     st.markdown('</div>', unsafe_allow_html=True)
+
+with main_app_tabs[4]: # Management
+    st.markdown('<div class="management-section">', unsafe_allow_html=True)
+    
+    _ , col_management_tabs_content, _ = st.columns([0.2, 2.6, 0.2]) # Consistent layout for sub-tabs
+    with col_management_tabs_content:
+        management_semester_sub_tabs = st.tabs(["Semestre 1", "Semestre 2"])
+        with management_semester_sub_tabs[0]:
+            display_semester_subjects_ui(management_s1_subjects, "S1", "MGT", is_s2_tab=False)
+        with management_semester_sub_tabs[1]:
+            display_semester_subjects_ui(management_s2_subjects, "S2", "MGT", is_s2_tab=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+
 
 # --- Footer ---
 st.markdown("""
