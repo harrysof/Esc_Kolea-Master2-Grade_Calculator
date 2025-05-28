@@ -1,16 +1,19 @@
 import streamlit as st
 
+# --- Page Configuration ---
 st.set_page_config(
-    page_title="Master 2 Accounting Calculator",
-    page_icon="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.vecteezy.com%2Fsystem%2Fresources%2Fpreviews%2F014%2F919%2F451%2Foriginal%2Faccounting-analysis-3d-render-icon-png.png&f=1&nofb=1&ipt=e54e538b8f89fd3f52b547747cfa167f237423ff5c21e932eaa948e69c48ec12",
+    page_title="Master 2 Grade Calculator",
+    page_icon="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn2.iconfinder.com%2Fdata%2Ficons%2Fcurrency-32%2F55%2Fcurrency-18-4096.png&f=1&nofb=1&ipt=925920844e55526262ccb6bc80b9f2cecfa279d58f8d79f576f16b989b686d43", # Using Finance icon
     layout="wide"
 )
 
+# --- CSS Styling ---
 st.markdown("""
     <style>
+    /* General Styles */
     .main-title {
         font-size: 2.5rem;
-        color: #848CCF;
+        color: #FFCDAC; /* Defaulting to Finance title color, can be made neutral */
         text-align: center;
         padding: 1.5rem 0;
         background: #0e1118;
@@ -18,51 +21,37 @@ st.markdown("""
         margin-bottom: 2rem;
         font-weight: bold;
     }
-    .subject-header {
-        color: #848CCF;
-        font-size: 1.2rem;
-        padding: 0.5rem 0;
-        border-bottom: 2px solid #E2E8F0;
-        margin-top: 1rem;
-    }
-    .stButton > button {
-        width: 100%;
-        background-color: #848CCF;
-        color: white;
-    }
     .result-box {
         padding: 1rem;
         border-radius: 5px;
         margin-top: 1rem;
         background-color: #0e1118;
-        border: 1px solid #48BB78;
+        border: 1px solid #48BB78; /* Common green border */
     }
-    .semester-selector {
-        display: flex;
-        justify-content: center;
-        gap: 30px;
-        margin-bottom: 40px;
+    
+    /* Common subject header base style */
+    .subject-header {
+        font-size: 1.2rem;
+        padding: 0.5rem 0;
+        border-bottom: 2px solid #E2E8F0;
+        margin-top: 1rem;
     }
-    .semester-button {
-        background-color: #4f8bf9;
+
+    /* Finance d'entreprise Section Styles */
+    .finance-section .stButton > button {
+        width: 100%;
+        background-color: #ff812f;
         color: white;
-        padding: 10px 30px;
-        border-radius: 20px;
-        text-align: center;
-        cursor: pointer;
-        width: 150px;
     }
-    .semester-button.active {
-        background-color: #2662de;
-        font-weight: bold;
+    .finance-section .subject-header {
+        color: #FFCDAC;
     }
-    .s2-color {
-        color: #848CCF;
+    .finance-section .s2-header-color, .finance-section .subject-header.s2-header-color {
+        color: #E6BEA3; /* S2 specific color for Finance */
     }
-    /* Corner GIF Styles */
-    .corner-gif {
+    .finance-corner-gif {
         position: fixed;
-        top: 100px;
+        top: 85px;
         right: 10px;
         z-index: 9999;
         width: 80px;
@@ -70,210 +59,241 @@ st.markdown("""
         border-radius: 10px;
         box-shadow: 0 4px 8px rgba(0,0,0,0.3);
         opacity: 0.8;
-        transition: opacity 0.3s ease;
+        transition: opacity 0.3s ease, transform 0.3s ease;
     }
-    .corner-gif:hover {
+    .finance-corner-gif:hover {
         opacity: 1;
         transform: scale(1.1);
-        transition: all 0.3s ease;
     }
-    
-    /* Alternative: Bottom right corner */
-    .corner-gif-bottom {
+
+    /* Comptabilité et finance Section Styles */
+    .accounting-section .stButton > button {
+        width: 100%;
+        background-color: #848CCF;
+        color: white;
+    }
+    .accounting-section .subject-header {
+        color: #848CCF;
+    }
+    .accounting-section .s2-header-color, .accounting-section .subject-header.s2-header-color {
+        color: #848CCF; /* S2 specific color for Accounting (same as its primary) */
+    }
+    .accounting-corner-gif {
         position: fixed;
-        bottom: 20px;
-        right: 20px;
+        top: 100px; /* Different top position for accounting GIF */
+        right: 10px;
         z-index: 9999;
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
+        width: 80px;
+        height: 80px;
+        border-radius: 10px;
         box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-        opacity: 0.7;
+        opacity: 0.8;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .accounting-corner-gif:hover {
+        opacity: 1;
+        transform: scale(1.1);
     }
     </style>
     """, unsafe_allow_html=True)
 
-st.markdown("""
-    <img src="https://media3.giphy.com/media/njON3jEmTYHEfRbfsk/200w.gif?cid=6c09b95286r0q4sdyv82fj0t6vx4gmmec7lipefp8jihytoe&ep=v1_stickers_search&rid=200w.gif&ct=s" class="corner-gif" alt="Finance GIF">
-    """, unsafe_allow_html=True)
-
+# --- Main Title ---
 st.markdown("""
     <div class="main-title">
-        Master Accounting<br>Grade Calculator<br>
+        Master 2<br>Grade Calculator<br>
         <span style="font-size: 1.2rem; color: #dcdcdc;">By Sofiane Belkacem Nacer</span>
     </div>
     """, unsafe_allow_html=True)
 
-# Define subjects and coefficients for each semester
-s1_subjects = {
-    "Marche Des Capitaux": 3,
-    "Comptabilite Approfondie": 3,
-    "Management Des Couts": 3,
-    "Control De Gestion": 3,
-    "Technique Bancaire": 3,
-    "PMO": 3,
-    "Planification Financiere": 3,
-    "Strategie D'entreprise": 3,
-    "Systeme d'Information de Gestion": 3,
-    "Droit": 1.5,
-    "Finance Publique": 1.5
+# --- GIFs HTML ---
+finance_gif_html = """
+    <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fbestanimations.com%2FAnimals%2FMammals%2FCats%2Fcats%2Fcute-kitty-animated-gif-61.gif&f=1&nofb=1&ipt=9b9f49feca4c1a8d04b816cebb11048d1cba7254539b845380dd510c43cb5d4e" class="finance-corner-gif" alt="Finance GIF">
+"""
+accounting_gif_html = """
+    <img src="https://media3.giphy.com/media/njON3jEmTYHEfRbfsk/200w.gif?cid=6c09b95286r0q4sdyv82fj0t6vx4gmmec7lipefp8jihytoe&ep=v1_stickers_search&rid=200w.gif&ct=s" class="accounting-corner-gif" alt="Accounting GIF">
+"""
+
+# --- Subject Definitions ---
+finance_s1_subjects = {
+    "Théorie de la Décision et des Jeux": 3, "Stratégie d'Entreprise": 3, "Théorie Financière": 3,
+    "Marchés des Capitaux": 3, "Comptabilité Approfondie": 3, "PMO": 3, "Séries Temporelles": 3,
+    "Systèmes d'Information": 3, "Contrôle de Gestion": 3, "Technique Bancaires": 3
+}
+finance_s2_subjects = {
+    "Économie de l'information": 1.5, "Stage": 3, "Droit pénal des affaires": 3, "Économie managériale": 3,
+    "Initiation à la méthodologie": 1.5, "Économie monétaire": 3, "Gestion de portefeuille": 3,
+    "Évaluation des projets d'investissement": 3, "Analyse et conception de systèmes d'information": 3,
+    "Convexité et optimisation": 3, "Modèles stochastiques": 3
+}
+accounting_s1_subjects = {
+    "Marche Des Capitaux": 3, "Comptabilite Approfondie": 3, "Management Des Couts": 3,
+    "Control De Gestion": 3, "Technique Bancaire": 3, "PMO": 3, "Planification Financiere": 3,
+    "Strategie D'entreprise": 3, "Systeme d'Information de Gestion": 3, "Droit": 1.5, "Finance Publique": 1.5
+}
+accounting_s2_subjects = {
+    "Droit pénal des affaires": 3, "ACSI": 3, "Audit comptable et financier": 3, "Économie managériale": 3,
+    "Animation et contrôle budgétaire": 3, "Comptabilité des sociétés": 3, "Comptabilité publique 1": 3,
+    "Stage": 3, "Méthodologie": 1.5, "Finance d'entreprise approfondie": 3, "Comptabilité des instruments financiers": 1.5
 }
 
-s2_subjects = {
-    "Droit pénal des affaires": 3,
-    "ACSI": 3,
-    "Audit comptable et financier": 3,
-    "Économie managériale": 3,
-    "Animation et contrôle budgétaire": 3,
-    "Comptabilité des sociétés": 3,
-    "Comptabilité publique 1": 3,
-    "Stage": 3,
-    "Méthodologie": 1.5,
-    "Finance d'entreprise approfondie": 3,
-    "Comptabilité des instruments financiers": 1.5
+# --- Session State Initialization ---
+all_subjects_config = {
+    "FIN_S1": finance_s1_subjects, "FIN_S2": finance_s2_subjects,
+    "ACC_S1": accounting_s1_subjects, "ACC_S2": accounting_s2_subjects
 }
 
-# Initialize session state for all subjects across all semesters
-for subject in s1_subjects:
-    exam_key = f"S1_{subject}_exam"
-    td_key = f"S1_{subject}_TD"
-    if exam_key not in st.session_state:
-        st.session_state[exam_key] = None
-    if td_key not in st.session_state:
-        st.session_state[td_key] = None
+for config_key, subjects_dict in all_subjects_config.items():
+    for subject in subjects_dict:
+        exam_key = f"{config_key}_{subject}_exam"
+        td_key = f"{config_key}_{subject}_TD"
+        if exam_key not in st.session_state:
+            st.session_state[exam_key] = None
+        if td_key not in st.session_state:
+            st.session_state[td_key] = None
 
-for subject in s2_subjects:
-    exam_key = f"S2_{subject}_exam"
-    td_key = f"S2_{subject}_TD"
-    if exam_key not in st.session_state:
-        st.session_state[exam_key] = None
-    if td_key not in st.session_state:
-        st.session_state[td_key] = None
-
-def calculate_semester_average(semester, subjects_with_coef):
+# --- Calculation Function ---
+def calculate_semester_average(semester_num_char, subjects_with_coef, prefix_for_session_state):
     subjects_data = {}
-    prefix = f"S{semester}_"
+    valid_input = True
     
     for subject, coef in subjects_with_coef.items():
-        exam_key = f"{prefix}{subject}_exam"
-        td_key = f"{prefix}{subject}_TD"
+        exam_key = f"{prefix_for_session_state}{subject}_exam"
+        td_key = f"{prefix_for_session_state}{subject}_TD"
         try:
-            exam_grade = float(st.session_state.get(exam_key, 0.0) or 0.0)
-            td_grade = float(st.session_state.get(td_key, 0.0) or 0.0)
+            exam_grade = st.session_state.get(exam_key)
+            td_grade = st.session_state.get(td_key)
+            
+            # Handle None or empty string inputs, default to 0.0
+            exam_grade = float(exam_grade if exam_grade is not None and str(exam_grade).strip() != "" else 0.0)
+            td_grade = float(td_grade if td_grade is not None and str(td_grade).strip() != "" else 0.0)
+
+            if not (0 <= exam_grade <= 20 and 0 <= td_grade <= 20):
+                st.error(f"Les notes pour {subject} doivent être entre 0 et 20.")
+                valid_input = False # Mark as invalid but continue processing other fields to show all errors
+            
             subjects_data[subject] = {"exam": exam_grade, "td": td_grade, "coef": coef}
-        except (ValueError, TypeError):
+
+        except ValueError: # Catches float conversion errors for non-numeric strings not caught by initial check
             st.error(f"Entrée invalide pour {subject}. Veuillez saisir uniquement des nombres.")
-            return
+            valid_input = False
+            # Provide default values to prevent crash during calculation, error is already shown
+            subjects_data[subject] = {"exam": 0.0, "td": 0.0, "coef": coef} 
+
+
+    if not valid_input:
+        return # Stop calculation if any input was invalid
 
     total_weighted_sum = 0
     total_credits = sum(subjects_with_coef.values())
     
+    if total_credits == 0: # Avoid division by zero
+        st.error("Total des crédits est zéro. Impossible de calculer la moyenne.")
+        return
+
     for subject, data in subjects_data.items():
-        average = (data["exam"] * 0.67) + (data["td"] * 0.33)
+        average = (data["exam"] * 0.67) + (data["td"] * 0.33) # Assuming fixed weights
         total_weighted_sum += average * data["coef"]
 
     semester_average = total_weighted_sum / total_credits
-    formatted_float = "{:.2f}".format(semester_average)
-    better_total = "{:.2f}".format(total_weighted_sum)
+    formatted_avg = "{:.2f}".format(semester_average)
+    formatted_total_weighted_sum = "{:.2f}".format(total_weighted_sum)
     
-    # Determine color based on average score
-    color = "#FF0000"  # Default red for below 10
-    if semester_average >= 15:
-        color = "#D89CF6"  # Purple for 15 and up
-    elif semester_average >= 14:
-        color = "#12CAD6"  # Teal for 14-15
-    elif semester_average >= 12:
-        color = "#50D890"  # Green for 12-14
-    elif semester_average >= 10:
-        color = "#FE9801"  # Orange for 10-12
+    color = "#FF0000"  # Default Red (Fail)
+    if semester_average >= 15: color = "#D89CF6"  # Purple
+    elif semester_average >= 14: color = "#12CAD6"  # Teal
+    elif semester_average >= 12: color = "#50D890"  # Green
+    elif semester_average >= 10: color = "#FE9801"  # Orange
     
     st.markdown(f"""
         <div class="result-box">
             <h3 style="color: #2F855A; margin: 0;">📊 Résultats</h3>
             <p style="font-size: 1.2rem; margin: 0.5rem 0;">
-                Moyenne S{semester}: <strong style="color: {color}">{formatted_float}</strong><br>
-                Total: <strong>{better_total}</strong>
+                Moyenne S{semester_num_char}: <strong style="color: {color}">{formatted_avg}</strong><br>
+                Total pondéré: <strong style="color: {color};">{formatted_total_weighted_sum}</strong>
             </p>
         </div>
     """, unsafe_allow_html=True)
 
-# Create tabs for semester selection
-col1, col2, col3 = st.columns([1, 3, 1])
-with col2:
-    semester_tabs = st.tabs(["Semestre 1", "Semestre 2"])
+# --- UI Function to Display Semester Subjects ---
+def display_semester_subjects_ui(subjects_dict, semester_id_str, spec_key_prefix, is_s2_tab=False):
+    # semester_id_str is "S1" or "S2"
+    # spec_key_prefix is "FIN" or "ACC"
+    
+    title_semester_num = semester_id_str[-1] # "1" or "2"
+    header_class = "subject-header"
+    h2_class_ допълнително = "" # additional class for H2, e.g. s2-header-color
 
-# Display subjects and input fields based on selected semester
-with semester_tabs[0]:
-    st.markdown("<h2 style='text-align: center;'>Semestre 1</h2>", unsafe_allow_html=True)
+    if is_s2_tab:
+        h2_class_допълнително = "s2-header-color" # This class is defined per-section in CSS
+        header_class += " s2-header-color"
+        st.markdown(f"<h2 style='text-align: center;' class='{h2_class_допълнително}'>Semestre {title_semester_num}</h2>", unsafe_allow_html=True)
+    else:
+        st.markdown(f"<h2 style='text-align: center;'>Semestre {title_semester_num}</h2>", unsafe_allow_html=True)
 
-    subjects_list = list(s1_subjects.keys())
-    for subject in subjects_list:
-        coef = s1_subjects[subject]
-        st.markdown(f'<div class="subject-header">{subject} (Coef: {coef})</div>', unsafe_allow_html=True)
-
+    for subject, coef in subjects_dict.items():
+        st.markdown(f'<div class="{header_class}">{subject} (Coef: {coef})</div>', unsafe_allow_html=True)
+        
         col_exam, col_td = st.columns(2)
+        exam_key_full = f"{spec_key_prefix}_{semester_id_str}_{subject}_exam"
+        td_key_full = f"{spec_key_prefix}_{semester_id_str}_{subject}_TD"
+
         with col_exam:
-            st.number_input(
-                "Exam",
-                key=f"S1_{subject}_exam",
-                min_value=0.0,
-                value=None,
-                step=0.05,
-                format="%.2f"
-            )
+            st.number_input("Note Examen", key=exam_key_full, min_value=0.0, max_value=20.0, value=st.session_state.get(exam_key_full), step=0.05, format="%.2f", help="Note de l'examen (0-20)")
         with col_td:
-            st.number_input(
-                "TD",
-                key=f"S1_{subject}_TD",
-                min_value=0.0,
-                value=None,
-                step=0.05,
-                format="%.2f"
-            )
-
+            st.number_input("Note TD", key=td_key_full, min_value=0.0, max_value=20.0, value=st.session_state.get(td_key_full), step=0.05, format="%.2f", help="Note de TD (0-20)")
+    
     st.markdown("<br>", unsafe_allow_html=True)
+    
+    button_key = f"calculate_avg_{spec_key_prefix}_{semester_id_str}"
+    button_text = f"Calculer la Moyenne S{title_semester_num}"
+    
+    # Center button for Finance, full width for Accounting (achieved by section-specific CSS on stButton)
+    # The original Finance code had an explicit centering for the button using columns.
+    if spec_key_prefix == "FIN":
+        _, col_btn, _ = st.columns([1, 1.5, 1]) # Adjusted ratio for potentially better centering
+        with col_btn:
+            if st.button(button_text, key=button_key):
+                calculate_semester_average(title_semester_num, subjects_dict, f"{spec_key_prefix}_{semester_id_str}_")
+    else: # For Accounting, button takes available width within its container by default
+        if st.button(button_text, key=button_key):
+            calculate_semester_average(title_semester_num, subjects_dict, f"{spec_key_prefix}_{semester_id_str}_")
 
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
-        if st.button("Calculer la Moyenne S1"):
-            calculate_semester_average(1, s1_subjects)
+# --- Main Application Tabs ---
+main_app_tabs = st.tabs(["Finance d'entreprise", "Comptabilité et finance"])
 
-with semester_tabs[1]:
-    st.markdown("<h2 style='text-align: center;' class='s2-color'>Semestre 2</h2>", unsafe_allow_html=True)
+with main_app_tabs[0]: # Finance d'entreprise
+    st.markdown('<div class="finance-section">', unsafe_allow_html=True) # Apply finance-specific styles
+    st.markdown(finance_gif_html, unsafe_allow_html=True)
+    
+    # Centered sub-tabs for Finance semester selection
+    _ , col_finance_tabs_content, _ = st.columns([0.2, 2.6, 0.2]) # Adjusted for wider central column
+    with col_finance_tabs_content:
+        finance_semester_sub_tabs = st.tabs(["Semestre 1", "Semestre 2"])
+        with finance_semester_sub_tabs[0]:
+            display_semester_subjects_ui(finance_s1_subjects, "S1", "FIN", is_s2_tab=False)
+        with finance_semester_sub_tabs[1]:
+            display_semester_subjects_ui(finance_s2_subjects, "S2", "FIN", is_s2_tab=True)
+    
+    st.markdown('</div>', unsafe_allow_html=True) # Close finance-section div
 
-    subjects_list = list(s2_subjects.keys())
-    for subject in subjects_list:
-        coef = s2_subjects[subject]
-        st.markdown(f'<div class="subject-header s2-color">{subject} (Coef: {coef})</div>', unsafe_allow_html=True)
+with main_app_tabs[1]: # Comptabilité et finance
+    st.markdown('<div class="accounting-section">', unsafe_allow_html=True) # Apply accounting-specific styles
+    st.markdown(accounting_gif_html, unsafe_allow_html=True)
 
-        col_exam, col_td = st.columns(2)
-        with col_exam:
-            st.number_input(
-                "Exam",
-                key=f"S2_{subject}_exam",
-                min_value=0.0,
-                value=None,
-                step=0.05,
-                format="%.2f"
-            )
-        with col_td:
-            st.number_input(
-                "TD",
-                key=f"S2_{subject}_TD",
-                min_value=0.0,
-                value=None,
-                step=0.05,
-                format="%.2f"
-            )
+    # Centered sub-tabs for Accounting semester selection
+    _ , col_accounting_tabs_content, _ = st.columns([0.2, 2.6, 0.2]) # Adjusted for wider central column
+    with col_accounting_tabs_content:
+        accounting_semester_sub_tabs = st.tabs(["Semestre 1", "Semestre 2"])
+        with accounting_semester_sub_tabs[0]:
+            display_semester_subjects_ui(accounting_s1_subjects, "S1", "ACC", is_s2_tab=False)
+        with accounting_semester_sub_tabs[1]:
+            display_semester_subjects_ui(accounting_s2_subjects, "S2", "ACC", is_s2_tab=True)
+            
+    st.markdown('</div>', unsafe_allow_html=True) # Close accounting-section div
 
-    st.markdown("<br>", unsafe_allow_html=True)
-
-    if st.button("Calculer la Moyenne S2"):
-        calculate_semester_average(2, s2_subjects)
-
-# Add footer with credits
+# --- Footer ---
 st.markdown("""
 <div style="text-align: center; margin-top: 50px; padding: 20px; background-color: #0e1118; border-radius: 10px;">
-    <p style="color: #dcdcdc; margin: 0;">© 2025 Master 2 Accounting Grade Calculator | Created by Sofiane Belkacem Nacer</p>
+    <p style="color: #dcdcdc; margin: 0;">© 2025 Master 2 Grade Calculator | Created by Sofiane Belkacem Nacer</p>
 </div>
 """, unsafe_allow_html=True)
