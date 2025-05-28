@@ -251,7 +251,7 @@ st.markdown("""
 # --- Main Title ---
 st.markdown("""
     <div class="title-area-container">
-        <h1 class="interactive-main-title">Grade Calculator</h1>
+        <h1 class="interactive-main-title">Master 2<br>Grade Calculator</h1>
         <p class="credit-subtitle">By Sofiane Belkacem Nacer</p>
     </div>
     """, unsafe_allow_html=True)
