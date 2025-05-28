@@ -3,7 +3,7 @@ import streamlit as st
 # --- Page Configuration ---
 st.set_page_config(
     page_title="Master 2 Grade Calculator",
-    page_icon="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn2.iconfinder.com%2Fdata%2Ficons%2Fcurrency-32%2F55%2Fcurrency-18-4096.png&f=1&nofb=1&ipt=925920844e55526262ccb6bc80b9f2cecfa279d58f8d79f576f16b989b686d43", # Using Finance icon
+    page_icon="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn2.iconfinder.com%2Fdata%2Ficons%2Fcurrency-32%2F55%2Fcurrency-18-4096.png&f=1&nofb=1&ipt=925920844e55526262ccb6bc80b9f2cecfa279d58f8d79f576f16b989b686d43",
     layout="wide"
 )
 
@@ -13,7 +13,7 @@ st.markdown("""
     /* General Styles */
     .main-title {
         font-size: 2.5rem;
-        color: #FFCDAC; /* Defaulting to Finance title color, can be made neutral */
+        color: #FFCDAC; /* Defaulting to Finance title color */
         text-align: center;
         padding: 1.5rem 0;
         background: #0e1118;
@@ -40,14 +40,14 @@ st.markdown("""
     /* Finance d'entreprise Section Styles */
     .finance-section .stButton > button {
         width: 100%;
-        background-color: #ff812f;
+        background-color: #ff812f; /* Orange */
         color: white;
     }
     .finance-section .subject-header {
-        color: #FFCDAC;
+        color: #FFCDAC; /* Light Orange/Peach */
     }
     .finance-section .s2-header-color, .finance-section .subject-header.s2-header-color {
-        color: #E6BEA3; /* S2 specific color for Finance */
+        color: #E6BEA3; /* Darker Peach for S2 Finance */
     }
     .finance-corner-gif {
         position: fixed;
@@ -69,18 +69,18 @@ st.markdown("""
     /* Comptabilité et finance Section Styles */
     .accounting-section .stButton > button {
         width: 100%;
-        background-color: #848CCF;
+        background-color: #848CCF; /* Purple */
         color: white;
     }
     .accounting-section .subject-header {
-        color: #848CCF;
+        color: #848CCF; /* Purple */
     }
     .accounting-section .s2-header-color, .accounting-section .subject-header.s2-header-color {
-        color: #848CCF; /* S2 specific color for Accounting (same as its primary) */
+        color: #848CCF; /* Same Purple for S2 Accounting */
     }
     .accounting-corner-gif {
         position: fixed;
-        top: 100px; /* Different top position for accounting GIF */
+        top: 100px;
         right: 10px;
         z-index: 9999;
         width: 80px;
@@ -94,6 +94,21 @@ st.markdown("""
         opacity: 1;
         transform: scale(1.1);
     }
+
+    /* Contrôle de gestion Section Styles */
+    .cdg-section .stButton > button {
+        width: 100%;
+        background-color: #4FD1C5; /* Teal/Green */
+        color: white;
+    }
+    .cdg-section .subject-header {
+        color: #4FD1C5; /* Teal/Green */
+    }
+    .cdg-section .s2-header-color, .cdg-section .subject-header.s2-header-color {
+        color: #4FD1C5; /* Same Teal/Green for S2 CDG */
+    }
+    /* No specific GIF for CDG for now to avoid clutter, can be added if needed */
+
     </style>
     """, unsafe_allow_html=True)
 
@@ -112,6 +127,7 @@ finance_gif_html = """
 accounting_gif_html = """
     <img src="https://media3.giphy.com/media/njON3jEmTYHEfRbfsk/200w.gif?cid=6c09b95286r0q4sdyv82fj0t6vx4gmmec7lipefp8jihytoe&ep=v1_stickers_search&rid=200w.gif&ct=s" class="accounting-corner-gif" alt="Accounting GIF">
 """
+# cdg_gif_html = """<img src="..." class="cdg-corner-gif" alt="CDG GIF">""" # Placeholder if a GIF is added later
 
 # --- Subject Definitions ---
 finance_s1_subjects = {
@@ -136,15 +152,45 @@ accounting_s2_subjects = {
     "Stage": 3, "Méthodologie": 1.5, "Finance d'entreprise approfondie": 3, "Comptabilité des instruments financiers": 1.5
 }
 
+# Contrôle de Gestion Subjects
+cdg_s1_subjects = {
+    "Management des coûts": 3,
+    "Marché des capitaux et évaluation des actifs financiers": 3,
+    "Droit des sociétés": 1.5,
+    "Techniques bancaires": 3,
+    "Comptabilité financière approfondie": 3,
+    "Analyse des processus d'affaires": 1.5,
+    "Contrôle de gestion": 3,
+    "Management des opérations": 3,
+    "Stratégie d'entreprise": 3,
+    "Audit et systèmes de contrôle": 1.5,
+    "Systèmes d'information de gestion": 3,
+    "Management de la chaine de valeur": 1.5
+}
+cdg_s2_subjects = {
+    "Comptabilité publique 1": 3,
+    "Animation et contrôle budgétaire": 3,
+    "Stage": 3,
+    "Comptabilité des sociétés": 3,
+    "Initiation à la méthodologie": 1.5,
+    "Economie managériale": 3,
+    "Analyse et conception des systèmes d'information": 3,
+    "Diagnostic d'entreprise par l'approche de la qualité totale": 1.5,
+    "Techniques de sondage": 3,
+    "Mesures de performance": 1.5,
+    "Tableau de bord": 1.5,
+    "Droit pénal des affaires": 3
+}
+
 # --- Session State Initialization ---
 all_subjects_config = {
     "FIN_S1": finance_s1_subjects, "FIN_S2": finance_s2_subjects,
-    "ACC_S1": accounting_s1_subjects, "ACC_S2": accounting_s2_subjects
+    "ACC_S1": accounting_s1_subjects, "ACC_S2": accounting_s2_subjects,
+    "CDG_S1": cdg_s1_subjects, "CDG_S2": cdg_s2_subjects # Added Contrôle de Gestion
 }
 
-for config_key_prefix, subjects_dict in all_subjects_config.items(): # Changed config_key to config_key_prefix for clarity
+for config_key_prefix, subjects_dict in all_subjects_config.items():
     for subject in subjects_dict:
-        # Construct keys like "FIN_S1_SubjectName_exam" or "ACC_S2_SubjectName_TD"
         exam_key = f"{config_key_prefix}_{subject}_exam"
         td_key = f"{config_key_prefix}_{subject}_TD"
         if exam_key not in st.session_state:
@@ -158,8 +204,8 @@ def calculate_semester_average(semester_num_char, subjects_with_coef, session_st
     valid_input = True
     
     for subject, coef in subjects_with_coef.items():
-        exam_key = f"{session_state_key_prefix}{subject}_exam" # Corrected to use full prefix
-        td_key = f"{session_state_key_prefix}{subject}_TD"     # Corrected to use full prefix
+        exam_key = f"{session_state_key_prefix}{subject}_exam"
+        td_key = f"{session_state_key_prefix}{subject}_TD"
         try:
             exam_grade = st.session_state.get(exam_key)
             td_grade = st.session_state.get(td_key)
@@ -168,13 +214,13 @@ def calculate_semester_average(semester_num_char, subjects_with_coef, session_st
             td_grade = float(td_grade if td_grade is not None and str(td_grade).strip() != "" else 0.0)
 
             if not (0 <= exam_grade <= 20 and 0 <= td_grade <= 20):
-                st.error(f"Les notes pour {subject} doivent être entre 0 et 20.")
+                st.error(f"Les notes pour '{subject}' doivent être entre 0 et 20.")
                 valid_input = False
             
             subjects_data[subject] = {"exam": exam_grade, "td": td_grade, "coef": coef}
 
         except ValueError:
-            st.error(f"Entrée invalide pour {subject}. Veuillez saisir uniquement des nombres.")
+            st.error(f"Entrée invalide pour '{subject}'. Veuillez saisir uniquement des nombres.")
             valid_input = False
             subjects_data[subject] = {"exam": 0.0, "td": 0.0, "coef": coef} 
 
@@ -196,11 +242,11 @@ def calculate_semester_average(semester_num_char, subjects_with_coef, session_st
     formatted_avg = "{:.2f}".format(semester_average)
     formatted_total_weighted_sum = "{:.2f}".format(total_weighted_sum)
     
-    color = "#FF0000"
-    if semester_average >= 15: color = "#D89CF6"
-    elif semester_average >= 14: color = "#12CAD6"
-    elif semester_average >= 12: color = "#50D890"
-    elif semester_average >= 10: color = "#FE9801"
+    color = "#FF0000" # Default Red (Fail)
+    if semester_average >= 15: color = "#D89CF6"  # Purple
+    elif semester_average >= 14: color = "#12CAD6"  # Teal
+    elif semester_average >= 12: color = "#50D890"  # Green
+    elif semester_average >= 10: color = "#FE9801"  # Orange
     
     st.markdown(f"""
         <div class="result-box">
@@ -214,27 +260,23 @@ def calculate_semester_average(semester_num_char, subjects_with_coef, session_st
 
 # --- UI Function to Display Semester Subjects ---
 def display_semester_subjects_ui(subjects_dict, semester_id_str, spec_key_prefix, is_s2_tab=False):
-    # semester_id_str is "S1" or "S2"
-    # spec_key_prefix is "FIN" or "ACC"
-    
-    title_semester_num = semester_id_str[-1] # "1" or "2"
+    title_semester_num = semester_id_str[-1]
     header_class = "subject-header"
-    h2_additional_class = "" # Renamed variable
+    h2_additional_class = ""
 
     if is_s2_tab:
-        h2_additional_class = "s2-header-color" # This class is defined per-section in CSS
-        header_class += " s2-header-color" # Appends to existing class string
+        h2_additional_class = "s2-header-color"
+        header_class += " s2-header-color"
         st.markdown(f"<h2 style='text-align: center;' class='{h2_additional_class}'>Semestre {title_semester_num}</h2>", unsafe_allow_html=True)
     else:
         st.markdown(f"<h2 style='text-align: center;'>Semestre {title_semester_num}</h2>", unsafe_allow_html=True)
 
-    session_state_key_prefix_for_subject = f"{spec_key_prefix}_{semester_id_str}_" # e.g., "FIN_S1_"
+    session_state_key_prefix_for_subject = f"{spec_key_prefix}_{semester_id_str}_"
 
     for subject, coef in subjects_dict.items():
         st.markdown(f'<div class="{header_class}">{subject} (Coef: {coef})</div>', unsafe_allow_html=True)
         
         col_exam, col_td = st.columns(2)
-        # Full key for session state access and widget uniqueness
         exam_key_full = f"{session_state_key_prefix_for_subject}{subject}_exam"
         td_key_full = f"{session_state_key_prefix_for_subject}{subject}_TD"
 
@@ -248,17 +290,17 @@ def display_semester_subjects_ui(subjects_dict, semester_id_str, spec_key_prefix
     button_key = f"calculate_avg_{spec_key_prefix}_{semester_id_str}"
     button_text = f"Calculer la Moyenne S{title_semester_num}"
     
-    if spec_key_prefix == "FIN":
+    if spec_key_prefix == "FIN": # Finance button has specific centering
         _, col_btn, _ = st.columns([1, 1.5, 1])
         with col_btn:
             if st.button(button_text, key=button_key):
                 calculate_semester_average(title_semester_num, subjects_dict, session_state_key_prefix_for_subject)
-    else:
+    else: # Accounting and CDG buttons take full width within their column
         if st.button(button_text, key=button_key):
             calculate_semester_average(title_semester_num, subjects_dict, session_state_key_prefix_for_subject)
 
 # --- Main Application Tabs ---
-main_app_tabs = st.tabs(["Finance d'entreprise", "Comptabilité et finance"])
+main_app_tabs = st.tabs(["Finance d'entreprise", "Comptabilité et finance", "Contrôle de gestion"])
 
 with main_app_tabs[0]: # Finance d'entreprise
     st.markdown('<div class="finance-section">', unsafe_allow_html=True)
@@ -271,7 +313,6 @@ with main_app_tabs[0]: # Finance d'entreprise
             display_semester_subjects_ui(finance_s1_subjects, "S1", "FIN", is_s2_tab=False)
         with finance_semester_sub_tabs[1]:
             display_semester_subjects_ui(finance_s2_subjects, "S2", "FIN", is_s2_tab=True)
-    
     st.markdown('</div>', unsafe_allow_html=True)
 
 with main_app_tabs[1]: # Comptabilité et finance
@@ -285,7 +326,19 @@ with main_app_tabs[1]: # Comptabilité et finance
             display_semester_subjects_ui(accounting_s1_subjects, "S1", "ACC", is_s2_tab=False)
         with accounting_semester_sub_tabs[1]:
             display_semester_subjects_ui(accounting_s2_subjects, "S2", "ACC", is_s2_tab=True)
-            
+    st.markdown('</div>', unsafe_allow_html=True)
+
+with main_app_tabs[2]: # Contrôle de gestion
+    st.markdown('<div class="cdg-section">', unsafe_allow_html=True)
+    # No GIF for CDG for now: # st.markdown(cdg_gif_html, unsafe_allow_html=True)
+    
+    _ , col_cdg_tabs_content, _ = st.columns([0.2, 2.6, 0.2]) # Consistent layout for sub-tabs
+    with col_cdg_tabs_content:
+        cdg_semester_sub_tabs = st.tabs(["Semestre 1", "Semestre 2"])
+        with cdg_semester_sub_tabs[0]:
+            display_semester_subjects_ui(cdg_s1_subjects, "S1", "CDG", is_s2_tab=False)
+        with cdg_semester_sub_tabs[1]:
+            display_semester_subjects_ui(cdg_s2_subjects, "S2", "CDG", is_s2_tab=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
 # --- Footer ---
