@@ -3,171 +3,270 @@ import streamlit as st
 # --- Page Configuration ---
 st.set_page_config(
     page_title="Master 2 Grade Calculator",
-    page_icon="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn2.iconfinder.com%2Fdata%2Ficons%2Fcurrency-32%2F55%2Fcurrency-18-4096.png&f=1&nofb=1&ipt=925920844e55526262ccb6bc80b9f2cecfa279d58f8d79f576f16b989b686d43",
+    page_icon="https://cdn-icons-png.flaticon.com/512/2909/2909988.png", # A more generic calculator/education icon
     layout="wide"
 )
 
 # --- CSS Styling ---
 st.markdown("""
     <style>
-    /* General Styles */
-    .main-title {
-        font-size: 2.5rem;
-        color: #FFCDAC; /* Defaulting to Finance title color */
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+    :root {
+        --font-family: 'Poppins', sans-serif;
+        
+        --finance-color: #FF8C00;        /* DarkOrange */
+        --accounting-color: #6A5ACD;     /* SlateBlue */
+        --cdg-color: #20B2AA;            /* LightSeaGreen */
+        --mfb-color: #4682B4;            /* SteelBlue */
+        --management-color: #32CD32;     /* LimeGreen */
+        --marketing-color: #FF69B4;       /* HotPink */
+
+        --text-light: #EAEAEA;
+        --text-medium: #B0B0B0;
+        --text-dark: #333333;
+        --bg-main: #10101A; /* Darker main background */
+        --bg-content: #1C1C2B; /* Slightly lighter for content cards */
+        --bg-accent: #2A2A3D;  /* For interactive elements or highlights */
+        --border-color: #383854;
+        --shadow-color: rgba(0, 0, 0, 0.2);
+    }
+
+    body {
+        font-family: var(--font-family);
+        background-color: var(--bg-main);
+        color: var(--text-light);
+    }
+
+    /* Main Title Styling */
+    .modern-title-container {
         text-align: center;
-        padding: 1.5rem 0;
-        background: #0e1118;
-        border-radius: 10px;
-        margin-bottom: 2rem;
-        font-weight: bold;
+        margin-bottom: 2.5rem; /* Reduced margin */
+        padding: 2rem 1rem; /* Adjusted padding */
+        background: linear-gradient(145deg, var(--bg-accent) 0%, var(--bg-content) 100%);
+        border-radius: 12px;
+        box-shadow: 0 6px 12px var(--shadow-color);
     }
-    .result-box {
-        padding: 1rem;
-        border-radius: 5px;
-        margin-top: 1rem;
-        background-color: #0e1118;
-        border: 1px solid #48BB78; /* Common green border */
+    .modern-main-title {
+        font-size: 2.6rem; 
+        font-weight: 600; 
+        color: var(--text-light);
+        margin-bottom: 0.4rem;
+        letter-spacing: 0.5px;
+    }
+    .modern-subtitle {
+        font-size: 1rem;
+        color: var(--text-medium);
+        font-style: italic;
+        font-weight: 300;
     }
     
-    /* Common subject header base style */
+    /* General Section Styling */
+    .branch-section-content { /* Wrapper for centering semester tabs and inputs */
+        padding-top: 1rem;
+    }
+
+    /* Tab Styling - General for Semester Tabs */
+    .stTabs { /* Targeting Streamlit's tab component */
+        border-radius: 8px;
+        overflow: hidden; /* Helps with border-radius on children */
+    }
+    .stTabs [data-baseweb="tab-list"] {
+        background-color: var(--bg-accent); /* Background for the tab bar */
+        padding: 0.3rem; /* Small padding around tab buttons */
+        border-radius: 8px; /* Rounded tab bar */
+        display: flex;
+        justify-content: center; /* Center tab buttons */
+    }
+    .stTabs [role="tab"] {
+        font-family: var(--font-family);
+        font-size: 1rem; /* Slightly smaller for semester tabs */
+        font-weight: 500;
+        color: var(--text-medium);
+        background-color: transparent; /* Make inactive tabs blend */
+        border: none; /* Remove default borders */
+        padding: 0.6rem 1.2rem; /* Adjusted padding */
+        margin: 0 0.2rem; /* Spacing between tabs */
+        border-radius: 6px; /* Rounded individual tabs */
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    .stTabs [role="tab"]:hover {
+        color: var(--text-light);
+        background-color: #3c3c54; /* Slightly lighter accent for hover */
+    }
+
+    /* Branch-specific active semester tab styling */
+    .finance-section .stTabs [role="tab"][aria-selected="true"] { background-color: var(--finance-color); color: white !important; }
+    .accounting-section .stTabs [role="tab"][aria-selected="true"] { background-color: var(--accounting-color); color: white !important; }
+    .cdg-section .stTabs [role="tab"][aria-selected="true"] { background-color: var(--cdg-color); color: white !important; }
+    .mfb-section .stTabs [role="tab"][aria-selected="true"] { background-color: var(--mfb-color); color: white !important; }
+    .management-section .stTabs [role="tab"][aria-selected="true"] { background-color: var(--management-color); color: white !important; }
+    .marketing-section .stTabs [role="tab"][aria-selected="true"] { background-color: var(--marketing-color); color: white !important; }
+
+    /* Subject Header (within each branch) */
     .subject-header {
-        font-size: 1.2rem;
-        padding: 0.5rem 0;
-        border-bottom: 2px solid #E2E8F0;
-        margin-top: 1rem;
-    }
-
-    /* Finance d'entreprise Section Styles */
-    .finance-section .stButton > button {
-        width: 100%;
-        background-color: #ff812f; /* Orange */
-        color: white;
-    }
-    .finance-section .subject-header {
-        color: #FFCDAC; /* Light Orange/Peach */
-    }
-    .finance-section .s2-header-color, .finance-section .subject-header.s2-header-color {
-        color: #E6BEA3; /* Darker Peach for S2 Finance */
-    }
-    .finance-corner-gif {
-        position: fixed;
-        top: 85px;
-        right: 10px;
-        z-index: 9999;
-        width: 80px;
-        height: 80px;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-        opacity: 0.8;
-        transition: opacity 0.3s ease, transform 0.3s ease;
-    }
-    .finance-corner-gif:hover {
-        opacity: 1;
-        transform: scale(1.1);
-    }
-
-    /* Comptabilité et finance Section Styles */
-    .accounting-section .stButton > button {
-        width: 100%;
-        background-color: #848CCF; /* Purple */
-        color: white;
-    }
-    .accounting-section .subject-header {
-        color: #848CCF; /* Purple */
-    }
-    .accounting-section .s2-header-color, .accounting-section .subject-header.s2-header-color {
-        color: #848CCF; /* Same Purple for S2 Accounting */
-    }
-    .accounting-corner-gif {
-        position: fixed;
-        top: 100px;
-        right: 10px;
-        z-index: 9999;
-        width: 80px;
-        height: 80px;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-        opacity: 0.8;
-        transition: opacity 0.3s ease, transform 0.3s ease;
-    }
-    .accounting-corner-gif:hover {
-        opacity: 1;
-        transform: scale(1.1);
-    }
-
-    /* Contrôle de gestion Section Styles */
-    .cdg-section .stButton > button {
-        width: 100%;
-        background-color: #4FD1C5; /* Teal/Green */
-        color: white;
-    }
-    .cdg-section .subject-header {
-        color: #4FD1C5; /* Teal/Green */
-    }
-    .cdg-section .s2-header-color, .cdg-section .subject-header.s2-header-color {
-        color: #4FD1C5; /* Same Teal/Green for S2 CDG */
+        font-size: 1.1rem; /* Slightly smaller */
+        font-weight: 500;
+        padding: 0.8rem 0 0.6rem 0; /* Adjusted padding */
+        border-bottom: 1px solid var(--border-color);
+        margin-top: 1.5rem; /* Increased top margin */
+        margin-bottom: 1rem;
+        /* Branch color is applied inline via Python */
     }
     
-    /* Monie, Finance et Banque Section Styles */
-    .mfb-section .stButton > button {
-        width: 100%;
-        background-color: #4A90E2; /* Blue */
-        color: white;
+    /* Input fields (st.number_input) are harder to style deeply without breaking Streamlit themes. */
+    /* We rely on Streamlit's base styling + branch color for headers and buttons. */
+    div[data-testid="stNumberInput"] input {
+        border-radius: 6px;
+        border: 1px solid var(--border-color);
+        background-color: var(--bg-accent);
+        color: var(--text-light);
     }
-    .mfb-section .subject-header {
-        color: #4A90E2; /* Blue */
-    }
-    .mfb-section .s2-header-color, .mfb-section .subject-header.s2-header-color {
-        color: #4A90E2; /* Same Blue for S2 MFB */
-    }
-
-    /* Management Section Styles */
-    .management-section .stButton > button {
-        width: 100%;
-        background-color: #38A169; /* Vibrant Green */
-        color: white;
-    }
-    .management-section .subject-header {
-        color: #38A169; /* Vibrant Green */
-    }
-    .management-section .s2-header-color, .management-section .subject-header.s2-header-color {
-        color: #38A169; /* Same Vibrant Green for S2 Management */
+    div[data-testid="stNumberInput"] label {
+        font-weight: 400;
+        color: var(--text-medium);
     }
 
-    /* Marketing Section Styles */
-    .marketing-section .stButton > button {
-        width: 100%;
-        background-color: #ED64A6; /* Reddish-Pink */
-        color: white;
-    }
-    .marketing-section .subject-header {
-        color: #ED64A6; /* Reddish-Pink */
-    }
-    .marketing-section .s2-header-color, .marketing-section .subject-header.s2-header-color {
-        color: #ED64A6; /* Same Reddish-Pink for S2 Marketing */
-    }
-    /* No specific GIF for CDG, MFB, Management or Marketing for now to avoid clutter */
 
+    /* Button Styling */
+    .stButton > button {
+        width: 100%; 
+        color: white !important; /* Ensure text is white */
+        padding: 0.7rem 1.5rem;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 500;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+        box-shadow: 0 2px 4px var(--shadow-color);
+        margin-top: 1rem; /* Add some space above the button */
+    }
+    .stButton > button:hover {
+        opacity: 0.9;
+        box-shadow: 0 4px 8px var(--shadow-color);
+        transform: translateY(-1px);
+    }
+    .stButton > button:active {
+        transform: translateY(0px);
+        box-shadow: 0 1px 2px var(--shadow-color);
+    }
+    /* Branch specific background-colors for buttons */
+    .finance-section .stButton > button { background-color: var(--finance-color); }
+    .accounting-section .stButton > button { background-color: var(--accounting-color); }
+    .cdg-section .stButton > button { background-color: var(--cdg-color); }
+    .mfb-section .stButton > button { background-color: var(--mfb-color); }
+    .management-section .stButton > button { background-color: var(--management-color); }
+    .marketing-section .stButton > button { background-color: var(--marketing-color); }
+
+    /* Result Box Styling */
+    .modern-result-box-container { 
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin-top: 2.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .modern-result-box {
+        padding: 1.5rem 2rem;
+        border-radius: 10px;
+        background-color: var(--bg-content);
+        border: 1px solid var(--border-color);
+        width: auto; 
+        min-width: 320px; 
+        max-width: 450px; 
+        text-align: center; 
+        box-shadow: 0 5px 15px var(--shadow-color);
+    }
+    .modern-result-box .result-header {
+        color: var(--text-light);
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+        font-weight: 500;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 0.75rem;
+    }
+    .modern-result-box .result-text {
+        font-size: 1.25rem; 
+        color: var(--text-light);
+        margin: 0.8rem 0 0 0;
+    }
+    .modern-result-box .result-text strong {
+        font-weight: 600; 
+    }
+
+    /* Semester Title (S1/S2) within each tab content */
+    .semester-title {
+        text-align: center;
+        font-size: 1.6rem;
+        font-weight: 500;
+        margin-top: 1rem; /* Space after semester tabs */
+        margin-bottom: 1.5rem;
+        /* Branch color applied inline via Python */
+    }
+    
+    /* Corner GIF Styles - Kept if still desired */
+    .corner-gif {
+        position: fixed;
+        z-index: 9999;
+        width: 70px; /* Slightly smaller */
+        height: 70px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        opacity: 0.7;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .finance-corner-gif { top: 75px; right: 15px; }
+    .accounting-corner-gif { top: 155px; right: 15px; } /* Adjusted to not overlap */
+    .corner-gif:hover {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+
+    /* Footer Styling */
+    .modern-footer {
+        text-align: center;
+        margin-top: 4rem;
+        padding: 1.5rem;
+        background-color: var(--bg-content); 
+        border-top: 1px solid var(--border-color);
+    }
+    .modern-footer p {
+        color: var(--text-medium);
+        margin: 0;
+        font-size: 0.9rem;
+        font-weight: 300;
+    }
     </style>
     """, unsafe_allow_html=True)
 
 # --- Main Title ---
 st.markdown("""
-    <div class="main-title">
-        Master 2<br>Grade Calculator<br>
-        <span style="font-size: 1.2rem; color: #dcdcdc;">By Sofiane Belkacem Nacer</span>
+    <div class="modern-title-container">
+        <h1 class="modern-main-title">Master 2 Grade Calculator</h1>
+        <p class="modern-subtitle">By Sofiane Belkacem Nacer</p>
     </div>
     """, unsafe_allow_html=True)
 
-# --- GIFs HTML ---
+# --- GIFs HTML (optional, can be removed if not desired) ---
 finance_gif_html = """
-    <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fbestanimations.com%2FAnimals%2FMammals%2FCats%2Fcats%2Fcute-kitty-animated-gif-61.gif&f=1&nofb=1&ipt=9b9f49feca4c1a8d04b816cebb11048d1cba7254539b845380dd510c43cb5d4e" class="finance-corner-gif" alt="Finance GIF">
+    <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fbestanimations.com%2FAnimals%2FMammals%2FCats%2Fcats%2Fcute-kitty-animated-gif-61.gif&f=1&nofb=1&ipt=9b9f49feca4c1a8d04b816cebb11048d1cba7254539b845380dd510c43cb5d4e" class="corner-gif finance-corner-gif" alt="Finance GIF">
 """
 accounting_gif_html = """
-    <img src="https://media3.giphy.com/media/njON3jEmTYHEfRbfsk/200w.gif?cid=6c09b95286r0q4sdyv82fj0t6vx4gmmec7lipefp8jihytoe&ep=v1_stickers_search&rid=200w.gif&ct=s" class="accounting-corner-gif" alt="Accounting GIF">
+    <img src="https://media3.giphy.com/media/njON3jEmTYHEfRbfsk/200w.gif?cid=6c09b95286r0q4sdyv82fj0t6vx4gmmec7lipefp8jihytoe&ep=v1_stickers_search&rid=200w.gif&ct=s" class="corner-gif accounting-corner-gif" alt="Accounting GIF">
 """
 
-# --- Subject Definitions ---
+# Branch colors mapping (used in Python for dynamic styling)
+BRANCH_COLORS = {
+    "FIN": "var(--finance-color)",
+    "ACC": "var(--accounting-color)",
+    "CDG": "var(--cdg-color)",
+    "MFB": "var(--mfb-color)",
+    "MGT": "var(--management-color)",
+    "MKT": "var(--marketing-color)",
+}
+
+# --- Subject Definitions (remain the same) ---
 finance_s1_subjects = {
     "Théorie de la Décision et des Jeux": 3, "Stratégie d'Entreprise": 3, "Théorie Financière": 3,
     "Marchés des Capitaux": 3, "Comptabilité Approfondie": 3, "PMO": 3, "Séries Temporelles": 3,
@@ -229,34 +328,20 @@ management_s2_subjects = {
     "Comptabilité publique": 1.5, "Analyse et conception des systèmes d'information": 3,
     "Initiation à la méthodologie": 1.5
 }
-
-# Marketing Subjects
 marketing_s1_subjects = {
-    "Marketing des services": 3,
-    "Contrôle de gestion": 3,
-    "Stratégie d'entreprise": 3,
-    "Management des opérations": 3,
-    "Système d'informations de gestion": 3, # Corrected 'informations'
-    "Gestion des systèmes de la distribution": 3,
-    "Marketing stratégique": 3,
-    "Etudes et recherches marketing 1": 3,
-    "Comportement du consommateur": 3,
+    "Marketing des services": 3, "Contrôle de gestion": 3, "Stratégie d'entreprise": 3,
+    "Management des opérations": 3, "Système d'informations de gestion": 3,
+    "Gestion des systèmes de la distribution": 3, "Marketing stratégique": 3,
+    "Etudes et recherches marketing 1": 3, "Comportement du consommateur": 3,
     "Politique de communication": 3
 }
 marketing_s2_subjects = {
-    "Introduction à l'e-commerce": 1.5,
-    "Etudes et recherches marketing 2": 3,
-    "Economie managériale": 3,
-    "Initiation à la méthodologie": 1.5,
-    "Techniques publicitaires": 3,
-    "Droit pénal des affaires": 3,
-    "techniques de sondage": 3,
-    "Stage": 3,
-    "Analyse et conception de systèmes d'information": 3,
-    "Marketing international": 3,
+    "Introduction à l'e-commerce": 1.5, "Etudes et recherches marketing 2": 3,
+    "Economie managériale": 3, "Initiation à la méthodologie": 1.5, "Techniques publicitaires": 3,
+    "Droit pénal des affaires": 3, "techniques de sondage": 3, "Stage": 3,
+    "Analyse et conception de systèmes d'information": 3, "Marketing international": 3,
     "Marketing produit et gestion de la marque": 3
 }
-
 
 # --- Session State Initialization ---
 all_subjects_config = {
@@ -265,12 +350,11 @@ all_subjects_config = {
     "CDG_S1": cdg_s1_subjects, "CDG_S2": cdg_s2_subjects,
     "MFB_S1": mfb_s1_subjects, "MFB_S2": mfb_s2_subjects,
     "MGT_S1": management_s1_subjects, "MGT_S2": management_s2_subjects,
-    "MKT_S1": marketing_s1_subjects, "MKT_S2": marketing_s2_subjects # Added Marketing
+    "MKT_S1": marketing_s1_subjects, "MKT_S2": marketing_s2_subjects
 }
 
 def normalize_key_part(text):
     return text.replace(" ", "_").replace("'", "").replace("-", "_").replace("é", "e").replace("è", "e").replace("ê", "e").replace("à", "a").replace("ç", "c").replace("ô", "o").replace("û", "u").lower()
-
 
 for config_key_prefix, subjects_dict in all_subjects_config.items():
     for subject in subjects_dict:
@@ -319,47 +403,45 @@ def calculate_semester_average(semester_num_char, subjects_with_coef, session_st
         st.error("Total des crédits est zéro. Impossible de calculer la moyenne.")
         return
 
-    for subject_name, data in subjects_data.items(): # Renamed 'subject' to 'subject_name' to avoid conflict
+    for subject_name, data in subjects_data.items():
         average = (data["exam"] * 0.67) + (data["td"] * 0.33)
         total_weighted_sum += average * data["coef"]
 
     semester_average = total_weighted_sum / total_credits if total_credits else 0
     formatted_avg = "{:.2f}".format(semester_average)
-    formatted_total_weighted_sum = "{:.2f}".format(total_weighted_sum)
     
-    color = "#FF0000" # Default Red (Fail)
-    if semester_average >= 15: color = "#D89CF6"  # Purple
-    elif semester_average >= 14: color = "#12CAD6"  # Teal
-    elif semester_average >= 12: color = "#50D890"  # Green
-    elif semester_average >= 10: color = "#FE9801"  # Orange
+    # Determine color based on average score (same logic as before)
+    avg_color_hex = "#FF0000"  # Default Red
+    if semester_average >= 15: avg_color_hex = "#D89CF6"  # Purple
+    elif semester_average >= 14: avg_color_hex = "#12CAD6"  # Teal
+    elif semester_average >= 12: avg_color_hex = "#50D890"  # Green
+    elif semester_average >= 10: avg_color_hex = "#FE9801"  # Orange
     
+    # Use the new modern result box structure
     st.markdown(f"""
-        <div class="result-box">
-            <h3 style="color: #2F855A; margin: 0;">📊 Résultats</h3>
-            <p style="font-size: 1.2rem; margin: 0.5rem 0;">
-                Moyenne S{semester_num_char}: <strong style="color: {color}">{formatted_avg}</strong><br>
-                Total pondéré: <strong style="color: {color};">{formatted_total_weighted_sum}</strong>
-            </p>
+        <div class="modern-result-box-container">
+            <div class="modern-result-box">
+                <h3 class="result-header">Résultats</h3>
+                <p class="result-text">
+                    Moyenne S{semester_num_char}: <strong style="color: {avg_color_hex}">{formatted_avg}</strong>
+                </p>
+            </div>
         </div>
     """, unsafe_allow_html=True)
 
 # --- UI Function to Display Semester Subjects ---
-def display_semester_subjects_ui(subjects_dict, semester_id_str, spec_key_prefix, is_s2_tab=False):
+def display_semester_subjects_ui(subjects_dict, semester_id_str, spec_key_prefix):
     title_semester_num = semester_id_str[-1]
-    header_class = "subject-header"
-    h2_additional_class = ""
+    branch_color = BRANCH_COLORS.get(spec_key_prefix, "var(--text-light)") # Fallback color
 
-    if is_s2_tab:
-        h2_additional_class = "s2-header-color"
-        header_class += " s2-header-color"
-        st.markdown(f"<h2 style='text-align: center;' class='{h2_additional_class}'>Semestre {title_semester_num}</h2>", unsafe_allow_html=True)
-    else:
-        st.markdown(f"<h2 style='text-align: center;'>Semestre {title_semester_num}</h2>", unsafe_allow_html=True)
+    # Display Semester Title (S1/S2)
+    st.markdown(f"<h2 class='semester-title' style='color: {branch_color};'>Semestre {title_semester_num}</h2>", unsafe_allow_html=True)
 
     session_state_key_prefix_for_subject_widgets = f"{spec_key_prefix}_{semester_id_str}_"
 
     for subject, coef in subjects_dict.items():
-        st.markdown(f'<div class="{header_class}">{subject} (Coef: {coef})</div>', unsafe_allow_html=True)
+        # Apply branch color to subject header dynamically
+        st.markdown(f'<div class="subject-header" style="color: {branch_color}; border-bottom-color: {branch_color}40;">{subject} (Coef: {coef})</div>', unsafe_allow_html=True)
         
         col_exam, col_td = st.columns(2)
         subject_key_part = normalize_key_part(subject)
@@ -371,109 +453,63 @@ def display_semester_subjects_ui(subjects_dict, semester_id_str, spec_key_prefix
         with col_td:
             st.number_input("Note TD", key=td_key_full, min_value=0.0, max_value=20.0, value=st.session_state.get(td_key_full), step=0.05, format="%.2f", help="Note de TD (0-20)")
     
-    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True) # Spacer
     
-    button_key = f"calculate_avg_{spec_key_prefix}_{semester_id_str}"
-    button_text = f"Calculer la Moyenne S{title_semester_num}"
-    
-    # The session state key prefix passed to calculate_semester_average should be the one used for widgets
-    if spec_key_prefix == "FIN": 
-        _, col_btn, _ = st.columns([1, 1.5, 1])
-        with col_btn:
-            if st.button(button_text, key=button_key):
-                calculate_semester_average(title_semester_num, subjects_dict, session_state_key_prefix_for_subject_widgets)
-    else: 
+    # Centering the button using columns, within the already centered content column
+    _, btn_col, _ = st.columns([1, 1.5, 1]) 
+    with btn_col:
+        button_key = f"calculate_avg_{spec_key_prefix}_{semester_id_str}"
+        button_text = f"Calculer Moyenne S{title_semester_num}"
         if st.button(button_text, key=button_key):
             calculate_semester_average(title_semester_num, subjects_dict, session_state_key_prefix_for_subject_widgets)
 
 # --- Main Application Tabs ---
-main_app_tabs = st.tabs([
+main_app_tabs_names = [
     "Finance d'entreprise", 
     "Comptabilité et finance", 
     "Contrôle de gestion", 
     "Monie, Finance et Banque", 
     "Management",
     "Marketing"
-])
+]
+main_app_tabs = st.tabs(main_app_tabs_names)
 
-with main_app_tabs[0]: # Finance d'entreprise
-    st.markdown('<div class="finance-section">', unsafe_allow_html=True)
-    st.markdown(finance_gif_html, unsafe_allow_html=True)
-    
-    _ , col_finance_tabs_content, _ = st.columns([0.2, 2.6, 0.2])
-    with col_finance_tabs_content:
-        finance_semester_sub_tabs = st.tabs(["Semestre 1", "Semestre 2"])
-        with finance_semester_sub_tabs[0]:
-            display_semester_subjects_ui(finance_s1_subjects, "S1", "FIN", is_s2_tab=False)
-        with finance_semester_sub_tabs[1]:
-            display_semester_subjects_ui(finance_s2_subjects, "S2", "FIN", is_s2_tab=True)
-    st.markdown('</div>', unsafe_allow_html=True)
+# Branch configurations
+branch_configs = [
+    {"name": "Finance d'entreprise", "key_prefix": "FIN", "s1": finance_s1_subjects, "s2": finance_s2_subjects, "gif": finance_gif_html, "section_class": "finance-section"},
+    {"name": "Comptabilité et finance", "key_prefix": "ACC", "s1": accounting_s1_subjects, "s2": accounting_s2_subjects, "gif": accounting_gif_html, "section_class": "accounting-section"},
+    {"name": "Contrôle de gestion", "key_prefix": "CDG", "s1": cdg_s1_subjects, "s2": cdg_s2_subjects, "gif": None, "section_class": "cdg-section"},
+    {"name": "Monie, Finance et Banque", "key_prefix": "MFB", "s1": mfb_s1_subjects, "s2": mfb_s2_subjects, "gif": None, "section_class": "mfb-section"},
+    {"name": "Management", "key_prefix": "MGT", "s1": management_s1_subjects, "s2": management_s2_subjects, "gif": None, "section_class": "management-section"},
+    {"name": "Marketing", "key_prefix": "MKT", "s1": marketing_s1_subjects, "s2": marketing_s2_subjects, "gif": None, "section_class": "marketing-section"},
+]
 
-with main_app_tabs[1]: # Comptabilité et finance
-    st.markdown('<div class="accounting-section">', unsafe_allow_html=True)
-    st.markdown(accounting_gif_html, unsafe_allow_html=True)
+for i, tab in enumerate(main_app_tabs):
+    with tab:
+        branch_config = branch_configs[i]
+        st.markdown(f'<div class="{branch_config["section_class"]}">', unsafe_allow_html=True)
+        if branch_config["gif"]:
+            st.markdown(branch_config["gif"], unsafe_allow_html=True)
+        
+        # Centering column for semester tabs and content
+        # Adjust the ratios here if content feels too narrow or too wide
+        # [padding_left, content_width, padding_right]
+        col_padding1, col_content_area, col_padding2 = st.columns([0.3, 2.4, 0.3]) 
 
-    _ , col_accounting_tabs_content, _ = st.columns([0.2, 2.6, 0.2])
-    with col_accounting_tabs_content:
-        accounting_semester_sub_tabs = st.tabs(["Semestre 1", "Semestre 2"])
-        with accounting_semester_sub_tabs[0]:
-            display_semester_subjects_ui(accounting_s1_subjects, "S1", "ACC", is_s2_tab=False)
-        with accounting_semester_sub_tabs[1]:
-            display_semester_subjects_ui(accounting_s2_subjects, "S2", "ACC", is_s2_tab=True)
-    st.markdown('</div>', unsafe_allow_html=True)
+        with col_content_area:
+            st.markdown('<div class="branch-section-content">', unsafe_allow_html=True) # Wrapper for top padding
+            semester_sub_tabs = st.tabs(["Semestre 1", "Semestre 2"])
+            with semester_sub_tabs[0]:
+                display_semester_subjects_ui(branch_config["s1"], "S1", branch_config["key_prefix"])
+            with semester_sub_tabs[1]:
+                display_semester_subjects_ui(branch_config["s2"], "S2", branch_config["key_prefix"])
+            st.markdown('</div>', unsafe_allow_html=True) # Close branch-section-content
 
-with main_app_tabs[2]: # Contrôle de gestion
-    st.markdown('<div class="cdg-section">', unsafe_allow_html=True)
-    
-    _ , col_cdg_tabs_content, _ = st.columns([0.2, 2.6, 0.2])
-    with col_cdg_tabs_content:
-        cdg_semester_sub_tabs = st.tabs(["Semestre 1", "Semestre 2"])
-        with cdg_semester_sub_tabs[0]:
-            display_semester_subjects_ui(cdg_s1_subjects, "S1", "CDG", is_s2_tab=False)
-        with cdg_semester_sub_tabs[1]:
-            display_semester_subjects_ui(cdg_s2_subjects, "S2", "CDG", is_s2_tab=True)
-    st.markdown('</div>', unsafe_allow_html=True)
-
-with main_app_tabs[3]: # Monie, Finance et Banque
-    st.markdown('<div class="mfb-section">', unsafe_allow_html=True)
-    
-    _ , col_mfb_tabs_content, _ = st.columns([0.2, 2.6, 0.2])
-    with col_mfb_tabs_content:
-        mfb_semester_sub_tabs = st.tabs(["Semestre 1", "Semestre 2"])
-        with mfb_semester_sub_tabs[0]:
-            display_semester_subjects_ui(mfb_s1_subjects, "S1", "MFB", is_s2_tab=False)
-        with mfb_semester_sub_tabs[1]:
-            display_semester_subjects_ui(mfb_s2_subjects, "S2", "MFB", is_s2_tab=True)
-    st.markdown('</div>', unsafe_allow_html=True)
-
-with main_app_tabs[4]: # Management
-    st.markdown('<div class="management-section">', unsafe_allow_html=True)
-    
-    _ , col_management_tabs_content, _ = st.columns([0.2, 2.6, 0.2])
-    with col_management_tabs_content:
-        management_semester_sub_tabs = st.tabs(["Semestre 1", "Semestre 2"])
-        with management_semester_sub_tabs[0]:
-            display_semester_subjects_ui(management_s1_subjects, "S1", "MGT", is_s2_tab=False)
-        with management_semester_sub_tabs[1]:
-            display_semester_subjects_ui(management_s2_subjects, "S2", "MGT", is_s2_tab=True)
-    st.markdown('</div>', unsafe_allow_html=True)
-
-with main_app_tabs[5]: # Marketing
-    st.markdown('<div class="marketing-section">', unsafe_allow_html=True)
-    
-    _ , col_marketing_tabs_content, _ = st.columns([0.2, 2.6, 0.2]) # Consistent layout for sub-tabs
-    with col_marketing_tabs_content:
-        marketing_semester_sub_tabs = st.tabs(["Semestre 1", "Semestre 2"])
-        with marketing_semester_sub_tabs[0]:
-            display_semester_subjects_ui(marketing_s1_subjects, "S1", "MKT", is_s2_tab=False)
-        with marketing_semester_sub_tabs[1]:
-            display_semester_subjects_ui(marketing_s2_subjects, "S2", "MKT", is_s2_tab=True)
-    st.markdown('</div>', unsafe_allow_html=True)
-
+        st.markdown('</div>', unsafe_allow_html=True) # Close section_class div
 
 # --- Footer ---
 st.markdown("""
-<div style="text-align: center; margin-top: 50px; padding: 20px; background-color: #0e1118; border-radius: 10px;">
-    <p style="color: #dcdcdc; margin: 0;">© 2025 Master 2 Grade Calculator | Created by Sofiane Belkacem Nacer</p>
+<div class="modern-footer">
+    <p>© 2025 Master 2 Grade Calculator | Created by Sofiane Belkacem Nacer</p>
 </div>
 """, unsafe_allow_html=True)
