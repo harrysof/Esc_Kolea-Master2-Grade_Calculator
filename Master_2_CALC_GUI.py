@@ -476,13 +476,13 @@ def display_semester_subjects_ui(subjects_dict, semester_id_str, spec_key_prefix
 
 branch_display_names = [
     "Finance d'entreprise", "Comptabilité et finance", "Contrôle de gestion", 
-    "Monie, Finance et Banque", "Management", "Marketing"
+    "MFB", "Management", "Marketing"
 ]
 branch_data_map = {
     "Finance d'entreprise": {"key_prefix": "FIN", "s1": finance_s1_subjects, "s2": finance_s2_subjects, "css_class_prefix": "finance"},
     "Comptabilité et finance": {"key_prefix": "ACC", "s1": accounting_s1_subjects, "s2": accounting_s2_subjects, "css_class_prefix": "accounting"},
     "Contrôle de gestion": {"key_prefix": "CDG", "s1": cdg_s1_subjects, "s2": cdg_s2_subjects, "css_class_prefix": "cdg"},
-    "Monie, Finance et Banque": {"key_prefix": "MFB", "s1": mfb_s1_subjects, "s2": mfb_s2_subjects, "css_class_prefix": "mfb"},
+    "MFB": {"key_prefix": "MFB", "s1": mfb_s1_subjects, "s2": mfb_s2_subjects, "css_class_prefix": "mfb"},
     "Management": {"key_prefix": "MGT", "s1": management_s1_subjects, "s2": management_s2_subjects, "css_class_prefix": "management"},
     "Marketing": {"key_prefix": "MKT", "s1": marketing_s1_subjects, "s2": marketing_s2_subjects, "css_class_prefix": "marketing"},
 }
