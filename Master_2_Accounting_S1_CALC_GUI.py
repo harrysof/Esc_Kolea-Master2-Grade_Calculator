@@ -142,67 +142,65 @@ all_subjects_config = {
     "ACC_S1": accounting_s1_subjects, "ACC_S2": accounting_s2_subjects
 }
 
-for config_key, subjects_dict in all_subjects_config.items():
+for config_key_prefix, subjects_dict in all_subjects_config.items(): # Changed config_key to config_key_prefix for clarity
     for subject in subjects_dict:
-        exam_key = f"{config_key}_{subject}_exam"
-        td_key = f"{config_key}_{subject}_TD"
+        # Construct keys like "FIN_S1_SubjectName_exam" or "ACC_S2_SubjectName_TD"
+        exam_key = f"{config_key_prefix}_{subject}_exam"
+        td_key = f"{config_key_prefix}_{subject}_TD"
         if exam_key not in st.session_state:
             st.session_state[exam_key] = None
         if td_key not in st.session_state:
             st.session_state[td_key] = None
 
 # --- Calculation Function ---
-def calculate_semester_average(semester_num_char, subjects_with_coef, prefix_for_session_state):
+def calculate_semester_average(semester_num_char, subjects_with_coef, session_state_key_prefix):
     subjects_data = {}
     valid_input = True
     
     for subject, coef in subjects_with_coef.items():
-        exam_key = f"{prefix_for_session_state}{subject}_exam"
-        td_key = f"{prefix_for_session_state}{subject}_TD"
+        exam_key = f"{session_state_key_prefix}{subject}_exam" # Corrected to use full prefix
+        td_key = f"{session_state_key_prefix}{subject}_TD"     # Corrected to use full prefix
         try:
             exam_grade = st.session_state.get(exam_key)
             td_grade = st.session_state.get(td_key)
             
-            # Handle None or empty string inputs, default to 0.0
             exam_grade = float(exam_grade if exam_grade is not None and str(exam_grade).strip() != "" else 0.0)
             td_grade = float(td_grade if td_grade is not None and str(td_grade).strip() != "" else 0.0)
 
             if not (0 <= exam_grade <= 20 and 0 <= td_grade <= 20):
                 st.error(f"Les notes pour {subject} doivent être entre 0 et 20.")
-                valid_input = False # Mark as invalid but continue processing other fields to show all errors
+                valid_input = False
             
             subjects_data[subject] = {"exam": exam_grade, "td": td_grade, "coef": coef}
 
-        except ValueError: # Catches float conversion errors for non-numeric strings not caught by initial check
+        except ValueError:
             st.error(f"Entrée invalide pour {subject}. Veuillez saisir uniquement des nombres.")
             valid_input = False
-            # Provide default values to prevent crash during calculation, error is already shown
             subjects_data[subject] = {"exam": 0.0, "td": 0.0, "coef": coef} 
 
-
     if not valid_input:
-        return # Stop calculation if any input was invalid
+        return
 
     total_weighted_sum = 0
     total_credits = sum(subjects_with_coef.values())
     
-    if total_credits == 0: # Avoid division by zero
+    if total_credits == 0:
         st.error("Total des crédits est zéro. Impossible de calculer la moyenne.")
         return
 
     for subject, data in subjects_data.items():
-        average = (data["exam"] * 0.67) + (data["td"] * 0.33) # Assuming fixed weights
+        average = (data["exam"] * 0.67) + (data["td"] * 0.33)
         total_weighted_sum += average * data["coef"]
 
-    semester_average = total_weighted_sum / total_credits
+    semester_average = total_weighted_sum / total_credits if total_credits else 0
     formatted_avg = "{:.2f}".format(semester_average)
     formatted_total_weighted_sum = "{:.2f}".format(total_weighted_sum)
     
-    color = "#FF0000"  # Default Red (Fail)
-    if semester_average >= 15: color = "#D89CF6"  # Purple
-    elif semester_average >= 14: color = "#12CAD6"  # Teal
-    elif semester_average >= 12: color = "#50D890"  # Green
-    elif semester_average >= 10: color = "#FE9801"  # Orange
+    color = "#FF0000"
+    if semester_average >= 15: color = "#D89CF6"
+    elif semester_average >= 14: color = "#12CAD6"
+    elif semester_average >= 12: color = "#50D890"
+    elif semester_average >= 10: color = "#FE9801"
     
     st.markdown(f"""
         <div class="result-box">
@@ -221,21 +219,24 @@ def display_semester_subjects_ui(subjects_dict, semester_id_str, spec_key_prefix
     
     title_semester_num = semester_id_str[-1] # "1" or "2"
     header_class = "subject-header"
-    h2_class_ допълнително = "" # additional class for H2, e.g. s2-header-color
+    h2_additional_class = "" # Renamed variable
 
     if is_s2_tab:
-        h2_class_допълнително = "s2-header-color" # This class is defined per-section in CSS
-        header_class += " s2-header-color"
-        st.markdown(f"<h2 style='text-align: center;' class='{h2_class_допълнително}'>Semestre {title_semester_num}</h2>", unsafe_allow_html=True)
+        h2_additional_class = "s2-header-color" # This class is defined per-section in CSS
+        header_class += " s2-header-color" # Appends to existing class string
+        st.markdown(f"<h2 style='text-align: center;' class='{h2_additional_class}'>Semestre {title_semester_num}</h2>", unsafe_allow_html=True)
     else:
         st.markdown(f"<h2 style='text-align: center;'>Semestre {title_semester_num}</h2>", unsafe_allow_html=True)
+
+    session_state_key_prefix_for_subject = f"{spec_key_prefix}_{semester_id_str}_" # e.g., "FIN_S1_"
 
     for subject, coef in subjects_dict.items():
         st.markdown(f'<div class="{header_class}">{subject} (Coef: {coef})</div>', unsafe_allow_html=True)
         
         col_exam, col_td = st.columns(2)
-        exam_key_full = f"{spec_key_prefix}_{semester_id_str}_{subject}_exam"
-        td_key_full = f"{spec_key_prefix}_{semester_id_str}_{subject}_TD"
+        # Full key for session state access and widget uniqueness
+        exam_key_full = f"{session_state_key_prefix_for_subject}{subject}_exam"
+        td_key_full = f"{session_state_key_prefix_for_subject}{subject}_TD"
 
         with col_exam:
             st.number_input("Note Examen", key=exam_key_full, min_value=0.0, max_value=20.0, value=st.session_state.get(exam_key_full), step=0.05, format="%.2f", help="Note de l'examen (0-20)")
@@ -247,26 +248,23 @@ def display_semester_subjects_ui(subjects_dict, semester_id_str, spec_key_prefix
     button_key = f"calculate_avg_{spec_key_prefix}_{semester_id_str}"
     button_text = f"Calculer la Moyenne S{title_semester_num}"
     
-    # Center button for Finance, full width for Accounting (achieved by section-specific CSS on stButton)
-    # The original Finance code had an explicit centering for the button using columns.
     if spec_key_prefix == "FIN":
-        _, col_btn, _ = st.columns([1, 1.5, 1]) # Adjusted ratio for potentially better centering
+        _, col_btn, _ = st.columns([1, 1.5, 1])
         with col_btn:
             if st.button(button_text, key=button_key):
-                calculate_semester_average(title_semester_num, subjects_dict, f"{spec_key_prefix}_{semester_id_str}_")
-    else: # For Accounting, button takes available width within its container by default
+                calculate_semester_average(title_semester_num, subjects_dict, session_state_key_prefix_for_subject)
+    else:
         if st.button(button_text, key=button_key):
-            calculate_semester_average(title_semester_num, subjects_dict, f"{spec_key_prefix}_{semester_id_str}_")
+            calculate_semester_average(title_semester_num, subjects_dict, session_state_key_prefix_for_subject)
 
 # --- Main Application Tabs ---
 main_app_tabs = st.tabs(["Finance d'entreprise", "Comptabilité et finance"])
 
 with main_app_tabs[0]: # Finance d'entreprise
-    st.markdown('<div class="finance-section">', unsafe_allow_html=True) # Apply finance-specific styles
+    st.markdown('<div class="finance-section">', unsafe_allow_html=True)
     st.markdown(finance_gif_html, unsafe_allow_html=True)
     
-    # Centered sub-tabs for Finance semester selection
-    _ , col_finance_tabs_content, _ = st.columns([0.2, 2.6, 0.2]) # Adjusted for wider central column
+    _ , col_finance_tabs_content, _ = st.columns([0.2, 2.6, 0.2])
     with col_finance_tabs_content:
         finance_semester_sub_tabs = st.tabs(["Semestre 1", "Semestre 2"])
         with finance_semester_sub_tabs[0]:
@@ -274,14 +272,13 @@ with main_app_tabs[0]: # Finance d'entreprise
         with finance_semester_sub_tabs[1]:
             display_semester_subjects_ui(finance_s2_subjects, "S2", "FIN", is_s2_tab=True)
     
-    st.markdown('</div>', unsafe_allow_html=True) # Close finance-section div
+    st.markdown('</div>', unsafe_allow_html=True)
 
 with main_app_tabs[1]: # Comptabilité et finance
-    st.markdown('<div class="accounting-section">', unsafe_allow_html=True) # Apply accounting-specific styles
+    st.markdown('<div class="accounting-section">', unsafe_allow_html=True)
     st.markdown(accounting_gif_html, unsafe_allow_html=True)
 
-    # Centered sub-tabs for Accounting semester selection
-    _ , col_accounting_tabs_content, _ = st.columns([0.2, 2.6, 0.2]) # Adjusted for wider central column
+    _ , col_accounting_tabs_content, _ = st.columns([0.2, 2.6, 0.2])
     with col_accounting_tabs_content:
         accounting_semester_sub_tabs = st.tabs(["Semestre 1", "Semestre 2"])
         with accounting_semester_sub_tabs[0]:
@@ -289,7 +286,7 @@ with main_app_tabs[1]: # Comptabilité et finance
         with accounting_semester_sub_tabs[1]:
             display_semester_subjects_ui(accounting_s2_subjects, "S2", "ACC", is_s2_tab=True)
             
-    st.markdown('</div>', unsafe_allow_html=True) # Close accounting-section div
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # --- Footer ---
 st.markdown("""
