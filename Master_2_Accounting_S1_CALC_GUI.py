@@ -107,7 +107,20 @@ st.markdown("""
     .cdg-section .s2-header-color, .cdg-section .subject-header.s2-header-color {
         color: #4FD1C5; /* Same Teal/Green for S2 CDG */
     }
-    /* No specific GIF for CDG for now to avoid clutter, can be added if needed */
+    
+    /* Monie, Finance et Banque Section Styles */
+    .mfb-section .stButton > button {
+        width: 100%;
+        background-color: #4A90E2; /* Blue */
+        color: white;
+    }
+    .mfb-section .subject-header {
+        color: #4A90E2; /* Blue */
+    }
+    .mfb-section .s2-header-color, .mfb-section .subject-header.s2-header-color {
+        color: #4A90E2; /* Same Blue for S2 MFB */
+    }
+    /* No specific GIF for CDG or MFB for now to avoid clutter */
 
     </style>
     """, unsafe_allow_html=True)
@@ -127,7 +140,6 @@ finance_gif_html = """
 accounting_gif_html = """
     <img src="https://media3.giphy.com/media/njON3jEmTYHEfRbfsk/200w.gif?cid=6c09b95286r0q4sdyv82fj0t6vx4gmmec7lipefp8jihytoe&ep=v1_stickers_search&rid=200w.gif&ct=s" class="accounting-corner-gif" alt="Accounting GIF">
 """
-# cdg_gif_html = """<img src="..." class="cdg-corner-gif" alt="CDG GIF">""" # Placeholder if a GIF is added later
 
 # --- Subject Definitions ---
 finance_s1_subjects = {
@@ -151,42 +163,54 @@ accounting_s2_subjects = {
     "Animation et contrôle budgétaire": 3, "Comptabilité des sociétés": 3, "Comptabilité publique 1": 3,
     "Stage": 3, "Méthodologie": 1.5, "Finance d'entreprise approfondie": 3, "Comptabilité des instruments financiers": 1.5
 }
-
-# Contrôle de Gestion Subjects
 cdg_s1_subjects = {
-    "Management des coûts": 3,
-    "Marché des capitaux et évaluation des actifs financiers": 3,
-    "Droit des sociétés": 1.5,
-    "Techniques bancaires": 3,
-    "Comptabilité financière approfondie": 3,
-    "Analyse des processus d'affaires": 1.5,
-    "Contrôle de gestion": 3,
-    "Management des opérations": 3,
-    "Stratégie d'entreprise": 3,
-    "Audit et systèmes de contrôle": 1.5,
-    "Systèmes d'information de gestion": 3,
-    "Management de la chaine de valeur": 1.5
+    "Management des coûts": 3, "Marché des capitaux et évaluation des actifs financiers": 3,
+    "Droit des sociétés": 1.5, "Techniques bancaires": 3, "Comptabilité financière approfondie": 3,
+    "Analyse des processus d'affaires": 1.5, "Contrôle de gestion": 3, "Management des opérations": 3,
+    "Stratégie d'entreprise": 3, "Audit et systèmes de contrôle": 1.5,
+    "Systèmes d'information de gestion": 3, "Management de la chaine de valeur": 1.5
 }
 cdg_s2_subjects = {
-    "Comptabilité publique 1": 3,
-    "Animation et contrôle budgétaire": 3,
-    "Stage": 3,
-    "Comptabilité des sociétés": 3,
-    "Initiation à la méthodologie": 1.5,
-    "Economie managériale": 3,
+    "Comptabilité publique 1": 3, "Animation et contrôle budgétaire": 3, "Stage": 3,
+    "Comptabilité des sociétés": 3, "Initiation à la méthodologie": 1.5, "Economie managériale": 3,
     "Analyse et conception des systèmes d'information": 3,
-    "Diagnostic d'entreprise par l'approche de la qualité totale": 1.5,
-    "Techniques de sondage": 3,
-    "Mesures de performance": 1.5,
-    "Tableau de bord": 1.5,
-    "Droit pénal des affaires": 3
+    "Diagnostic d'entreprise par l'approche de la qualité totale": 1.5, "Techniques de sondage": 3,
+    "Mesures de performance": 1.5, "Tableau de bord": 1.5, "Droit pénal des affaires": 3
+}
+
+# Monie, Finance et Banque Subjects
+mfb_s1_subjects = {
+    "Théorie financière": 3,
+    "Séries temporelle": 3,
+    "Technique bancaires": 3,
+    "Macroéconomie profonde": 3,
+    "Management des opérations": 3,
+    "Economie des intermédiaires financiers": 3,
+    "Stratégie d'entreprise": 3,
+    "Marché des capitaux et évaluation des actifs financiers": 3,
+    "Systèmes d'information de gestion": 3,
+    "contrôle de gestion": 3
+}
+mfb_s2_subjects = {
+    "Gestion de portefeuille": 3,
+    "Droit pénal des affaires": 3,
+    "Stage": 3,
+    "Évaluation des projets d'investissement": 3,
+    "Economie monétaire": 3,
+    "Analyse et conception des systèmes d'information": 3,
+    "modèles aléatoires": 3,
+    "Economie managériale": 3,
+    "droit des banques, assurance, boursier": 3,
+    "finance islamique": 1.5,
+    "Initiation méthodologie": 1.5
 }
 
 # --- Session State Initialization ---
 all_subjects_config = {
     "FIN_S1": finance_s1_subjects, "FIN_S2": finance_s2_subjects,
     "ACC_S1": accounting_s1_subjects, "ACC_S2": accounting_s2_subjects,
-    "CDG_S1": cdg_s1_subjects, "CDG_S2": cdg_s2_subjects # Added Contrôle de Gestion
+    "CDG_S1": cdg_s1_subjects, "CDG_S2": cdg_s2_subjects,
+    "MFB_S1": mfb_s1_subjects, "MFB_S2": mfb_s2_subjects # Added Monie, Finance et Banque
 }
 
 for config_key_prefix, subjects_dict in all_subjects_config.items():
@@ -295,12 +319,12 @@ def display_semester_subjects_ui(subjects_dict, semester_id_str, spec_key_prefix
         with col_btn:
             if st.button(button_text, key=button_key):
                 calculate_semester_average(title_semester_num, subjects_dict, session_state_key_prefix_for_subject)
-    else: # Accounting and CDG buttons take full width within their column
+    else: # Other branches' buttons take full width within their column
         if st.button(button_text, key=button_key):
             calculate_semester_average(title_semester_num, subjects_dict, session_state_key_prefix_for_subject)
 
 # --- Main Application Tabs ---
-main_app_tabs = st.tabs(["Finance d'entreprise", "Comptabilité et finance", "Contrôle de gestion"])
+main_app_tabs = st.tabs(["Finance d'entreprise", "Comptabilité et finance", "Contrôle de gestion", "Monie, Finance et Banque"])
 
 with main_app_tabs[0]: # Finance d'entreprise
     st.markdown('<div class="finance-section">', unsafe_allow_html=True)
@@ -330,15 +354,26 @@ with main_app_tabs[1]: # Comptabilité et finance
 
 with main_app_tabs[2]: # Contrôle de gestion
     st.markdown('<div class="cdg-section">', unsafe_allow_html=True)
-    # No GIF for CDG for now: # st.markdown(cdg_gif_html, unsafe_allow_html=True)
     
-    _ , col_cdg_tabs_content, _ = st.columns([0.2, 2.6, 0.2]) # Consistent layout for sub-tabs
+    _ , col_cdg_tabs_content, _ = st.columns([0.2, 2.6, 0.2])
     with col_cdg_tabs_content:
         cdg_semester_sub_tabs = st.tabs(["Semestre 1", "Semestre 2"])
         with cdg_semester_sub_tabs[0]:
             display_semester_subjects_ui(cdg_s1_subjects, "S1", "CDG", is_s2_tab=False)
         with cdg_semester_sub_tabs[1]:
             display_semester_subjects_ui(cdg_s2_subjects, "S2", "CDG", is_s2_tab=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+with main_app_tabs[3]: # Monie, Finance et Banque
+    st.markdown('<div class="mfb-section">', unsafe_allow_html=True)
+    
+    _ , col_mfb_tabs_content, _ = st.columns([0.2, 2.6, 0.2]) # Consistent layout for sub-tabs
+    with col_mfb_tabs_content:
+        mfb_semester_sub_tabs = st.tabs(["Semestre 1", "Semestre 2"])
+        with mfb_semester_sub_tabs[0]:
+            display_semester_subjects_ui(mfb_s1_subjects, "S1", "MFB", is_s2_tab=False)
+        with mfb_semester_sub_tabs[1]:
+            display_semester_subjects_ui(mfb_s2_subjects, "S2", "MFB", is_s2_tab=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
 # --- Footer ---
