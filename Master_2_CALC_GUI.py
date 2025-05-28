@@ -4,7 +4,7 @@ st.set_page_config(
     page_title="Grade Calculator",
     page_icon="https://cdn-icons-png.flaticon.com/512/2909/2909988.png",
     layout="wide",
-    initial_sidebar_state="expanded" # Keep sidebar open by default on desktop
+    initial_sidebar_state="expanded"
 )
 
 st.markdown("""
