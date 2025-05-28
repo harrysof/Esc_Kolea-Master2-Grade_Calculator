@@ -1,6 +1,5 @@
 import streamlit as st
 
-# --- Page Configuration ---
 st.set_page_config(
     page_title="Grade Calculator",
     page_icon="https://cdn-icons-png.flaticon.com/512/2909/2909988.png",
@@ -8,7 +7,6 @@ st.set_page_config(
     initial_sidebar_state="expanded" # Keep sidebar open by default on desktop
 )
 
-# --- CSS Styling ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
@@ -248,7 +246,6 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- Main Title ---
 st.markdown("""
     <div class="title-area-container">
         <h1 class="interactive-main-title">Master 2<br>Grade Calculator</h1>
@@ -266,8 +263,7 @@ BRANCH_ACTIVE_SEM_TAB_CLASSES = {
     "MFB": "mfb-active-sem-tabs", "MGT": "management-active-sem-tabs", "MKT": "marketing-active-sem-tabs",
 }
 
-# --- Subject Definitions (Capitalized) ---
-def capitalize_module_name(name): # Function from previous step, unchanged
+def capitalize_module_name(name):
     words = []
     for word_idx, word in enumerate(name.split(' ')):
         if word.lower() in ["de", "la", "des", "et", "à", "l", "d"] and word_idx > 0:
@@ -358,7 +354,6 @@ marketing_s2_subjects = {capitalize_module_name(k): v for k, v in {
     "Marketing produit et gestion de la marque": 3
 }.items()}
 
-# --- Session State Initialization ---
 all_subjects_config = {
     "FIN_S1": finance_s1_subjects, "FIN_S2": finance_s2_subjects,
     "ACC_S1": accounting_s1_subjects, "ACC_S2": accounting_s2_subjects,
@@ -368,7 +363,7 @@ all_subjects_config = {
     "MKT_S1": marketing_s1_subjects, "MKT_S2": marketing_s2_subjects
 }
 
-def normalize_key_part(text): # Function from previous step, unchanged
+def normalize_key_part(text):
     text_lower = text.lower()
     return text_lower.replace(" ", "_").replace("'", "").replace("-", "_").replace("é", "e").replace("è", "e").replace("ê", "e").replace("à", "a").replace("ç", "c").replace("ô", "o").replace("û", "u")
 
@@ -380,7 +375,6 @@ for config_key_prefix, subjects_dict in all_subjects_config.items():
         if exam_key not in st.session_state: st.session_state[exam_key] = None
         if td_key not in st.session_state: st.session_state[td_key] = None
 
-# --- Calculation Function (unchanged from previous step) ---
 def calculate_semester_average(semester_num_char, subjects_with_coef, session_state_key_prefix):
     subjects_data = {}
     valid_input = True
@@ -425,7 +419,6 @@ def calculate_semester_average(semester_num_char, subjects_with_coef, session_st
             </div>
         </div>""", unsafe_allow_html=True)
 
-# --- UI Function to Display Semester Subjects ---
 def display_semester_subjects_ui(subjects_dict, semester_id_str, spec_key_prefix):
     title_semester_num = semester_id_str[-1]
     branch_color_var = BRANCH_COLORS.get(spec_key_prefix, "var(--text-light)")
@@ -446,9 +439,8 @@ def display_semester_subjects_ui(subjects_dict, semester_id_str, spec_key_prefix
             st.number_input("Note TD", key=td_key_full, min_value=0.0, max_value=20.0, value=st.session_state.get(td_key_full), step=0.05, format="%.2f")
     st.markdown("<br>", unsafe_allow_html=True) 
     
-    _, btn_col, _ = st.columns([0.8, 1.4, 0.8]) # Adjusted button column width slightly for centering
+    _, btn_col, _ = st.columns([0.8, 1.4, 0.8])
     with btn_col:
-        # Apply dynamic button color
         button_style_html = f"""
             <style>
                 #{st.session_state.get(f'button_container_id_{spec_key_prefix}_{semester_id_str}', 'none')} .stButton > button {{
@@ -482,7 +474,6 @@ def display_semester_subjects_ui(subjects_dict, semester_id_str, spec_key_prefix
             calculate_semester_average(title_semester_num, subjects_dict, session_state_key_prefix_for_widgets)
 
 
-# --- Branch Configuration Data ---
 branch_display_names = [
     "Finance d'entreprise", "Comptabilité et finance", "Contrôle de gestion", 
     "Monie, Finance et Banque", "Management", "Marketing"
@@ -496,31 +487,23 @@ branch_data_map = {
     "Marketing": {"key_prefix": "MKT", "s1": marketing_s1_subjects, "s2": marketing_s2_subjects, "css_class_prefix": "marketing"},
 }
 
-# --- Sidebar for Branch Selection ---
 with st.sidebar:
-    # Use st.markdown for a styled header instead of the default selectbox label
     st.markdown("<p class='sidebar-header'>Choisir la Spécialité</p>", unsafe_allow_html=True)
     selected_branch_name = st.selectbox(
-        label=".", # Dummy label, actual label is the markdown above
+        label=".",
         options=branch_display_names,
         index=0, 
         label_visibility="collapsed" 
     )
 
-# --- Main Content Area ---
 if selected_branch_name:
     branch_config = branch_data_map[selected_branch_name]
     selected_branch_key_prefix = branch_config["key_prefix"]
-    # This class will be used by CSS to style semester tabs and buttons for the selected branch
     dynamic_content_class = f"{branch_config['css_class_prefix']}-active-sem-tabs" 
 
     col_padding1, col_content_area, col_padding2 = st.columns([0.15, 2.7, 0.15])
     with col_content_area:
-        # Apply the dynamic class to this container for styling child elements
         st.markdown(f'<div class="semester-tabs-container {dynamic_content_class}">', unsafe_allow_html=True)
-        
-        # Add section-specific button styling here, applied to the whole content area
-        # This ensures buttons within this section get the right color.
         st.markdown(f"""
             <style>
                 .{dynamic_content_class} .stButton > button {{
@@ -534,9 +517,8 @@ if selected_branch_name:
             display_semester_subjects_ui(branch_config["s1"], "S1", selected_branch_key_prefix)
         with semester_sub_tabs[1]:
             display_semester_subjects_ui(branch_config["s2"], "S2", selected_branch_key_prefix)
-        st.markdown('</div>', unsafe_allow_html=True) # Close semester-tabs-container
+        st.markdown('</div>', unsafe_allow_html=True)
 
-# --- Footer ---
 st.markdown("""
 <div class="modern-footer">
     <p>© 2025 Grade Calculator | Created by Sofiane Belkacem Nacer</p>
