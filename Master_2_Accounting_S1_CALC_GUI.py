@@ -133,7 +133,20 @@ st.markdown("""
     .management-section .s2-header-color, .management-section .subject-header.s2-header-color {
         color: #38A169; /* Same Vibrant Green for S2 Management */
     }
-    /* No specific GIF for CDG, MFB, or Management for now to avoid clutter */
+
+    /* Marketing Section Styles */
+    .marketing-section .stButton > button {
+        width: 100%;
+        background-color: #ED64A6; /* Reddish-Pink */
+        color: white;
+    }
+    .marketing-section .subject-header {
+        color: #ED64A6; /* Reddish-Pink */
+    }
+    .marketing-section .s2-header-color, .marketing-section .subject-header.s2-header-color {
+        color: #ED64A6; /* Same Reddish-Pink for S2 Marketing */
+    }
+    /* No specific GIF for CDG, MFB, Management or Marketing for now to avoid clutter */
 
     </style>
     """, unsafe_allow_html=True)
@@ -203,34 +216,47 @@ mfb_s2_subjects = {
     "Economie managériale": 3, "droit des banques, assurance, boursier": 3,
     "finance islamique": 1.5, "Initiation méthodologie": 1.5
 }
-
-# Management Subjects
 management_s1_subjects = {
-    "Théorie de la décision et des jeux": 3,
-    "Finances publiques": 1.5,
-    "Culture d'entreprise": 1.5,
-    "Gouvernance d'entreprise": 3,
-    "Management public": 3,
-    "Stratégie d'entreprise": 3,
-    "Systèmes d'information de gestion": 3,
-    "Organisation de l'entreprise": 3,
-    "Management des ressources humaines": 3,
-    "Management des opérations": 3,
-    "contrôle de gestion": 3
+    "Théorie de la décision et des jeux": 3, "Finances publiques": 1.5, "Culture d'entreprise": 1.5,
+    "Gouvernance d'entreprise": 3, "Management public": 3, "Stratégie d'entreprise": 3,
+    "Systèmes d'information de gestion": 3, "Organisation de l'entreprise": 3,
+    "Management des ressources humaines": 3, "Management des opérations": 3, "contrôle de gestion": 3
 }
 management_s2_subjects = {
-    "techniques de sondage": 3,
-    "Animation et contrôle budgétaire": 3,
-    "Tableaux de bord et de mesures de la performance": 3,
-    "Stage": 3,
-    "théories de la concurrence": 3,
-    "Communication d'entreprise": 3,
-    "Droit pénal des affaires": 3,
-    "Management de changement": 3,
-    "Comptabilité publique": 1.5,
-    "Analyse et conception des systèmes d'information": 3,
+    "techniques de sondage": 3, "Animation et contrôle budgétaire": 3,
+    "Tableaux de bord et de mesures de la performance": 3, "Stage": 3, "théories de la concurrence": 3,
+    "Communication d'entreprise": 3, "Droit pénal des affaires": 3, "Management de changement": 3,
+    "Comptabilité publique": 1.5, "Analyse et conception des systèmes d'information": 3,
     "Initiation à la méthodologie": 1.5
 }
+
+# Marketing Subjects
+marketing_s1_subjects = {
+    "Marketing des services": 3,
+    "Contrôle de gestion": 3,
+    "Stratégie d'entreprise": 3,
+    "Management des opérations": 3,
+    "Système d'informations de gestion": 3, # Corrected 'informations'
+    "Gestion des systèmes de la distribution": 3,
+    "Marketing stratégique": 3,
+    "Etudes et recherches marketing 1": 3,
+    "Comportement du consommateur": 3,
+    "Politique de communication": 3
+}
+marketing_s2_subjects = {
+    "Introduction à l'e-commerce": 1.5,
+    "Etudes et recherches marketing 2": 3,
+    "Economie managériale": 3,
+    "Initiation à la méthodologie": 1.5,
+    "Techniques publicitaires": 3,
+    "Droit pénal des affaires": 3,
+    "techniques de sondage": 3,
+    "Stage": 3,
+    "Analyse et conception de systèmes d'information": 3,
+    "Marketing international": 3,
+    "Marketing produit et gestion de la marque": 3
+}
+
 
 # --- Session State Initialization ---
 all_subjects_config = {
@@ -238,13 +264,17 @@ all_subjects_config = {
     "ACC_S1": accounting_s1_subjects, "ACC_S2": accounting_s2_subjects,
     "CDG_S1": cdg_s1_subjects, "CDG_S2": cdg_s2_subjects,
     "MFB_S1": mfb_s1_subjects, "MFB_S2": mfb_s2_subjects,
-    "MGT_S1": management_s1_subjects, "MGT_S2": management_s2_subjects # Added Management
+    "MGT_S1": management_s1_subjects, "MGT_S2": management_s2_subjects,
+    "MKT_S1": marketing_s1_subjects, "MKT_S2": marketing_s2_subjects # Added Marketing
 }
+
+def normalize_key_part(text):
+    return text.replace(" ", "_").replace("'", "").replace("-", "_").replace("é", "e").replace("è", "e").replace("ê", "e").replace("à", "a").replace("ç", "c").replace("ô", "o").replace("û", "u").lower()
+
 
 for config_key_prefix, subjects_dict in all_subjects_config.items():
     for subject in subjects_dict:
-        # Use replace to handle potential spaces or special chars in subject names for keys
-        subject_key_part = subject.replace(" ", "_").replace("'", "").replace("é", "e").replace("è", "e").replace("à", "a").lower()
+        subject_key_part = normalize_key_part(subject)
         exam_key = f"{config_key_prefix}_{subject_key_part}_exam"
         td_key = f"{config_key_prefix}_{subject_key_part}_TD"
         if exam_key not in st.session_state:
@@ -258,7 +288,7 @@ def calculate_semester_average(semester_num_char, subjects_with_coef, session_st
     valid_input = True
     
     for subject, coef in subjects_with_coef.items():
-        subject_key_part = subject.replace(" ", "_").replace("'", "").replace("é", "e").replace("è", "e").replace("à", "a").lower()
+        subject_key_part = normalize_key_part(subject)
         exam_key = f"{session_state_key_prefix}{subject_key_part}_exam"
         td_key = f"{session_state_key_prefix}{subject_key_part}_TD"
         try:
@@ -289,7 +319,7 @@ def calculate_semester_average(semester_num_char, subjects_with_coef, session_st
         st.error("Total des crédits est zéro. Impossible de calculer la moyenne.")
         return
 
-    for subject, data in subjects_data.items():
+    for subject_name, data in subjects_data.items(): # Renamed 'subject' to 'subject_name' to avoid conflict
         average = (data["exam"] * 0.67) + (data["td"] * 0.33)
         total_weighted_sum += average * data["coef"]
 
@@ -326,15 +356,15 @@ def display_semester_subjects_ui(subjects_dict, semester_id_str, spec_key_prefix
     else:
         st.markdown(f"<h2 style='text-align: center;'>Semestre {title_semester_num}</h2>", unsafe_allow_html=True)
 
-    session_state_key_prefix_for_subject = f"{spec_key_prefix}_{semester_id_str}_"
+    session_state_key_prefix_for_subject_widgets = f"{spec_key_prefix}_{semester_id_str}_"
 
     for subject, coef in subjects_dict.items():
         st.markdown(f'<div class="{header_class}">{subject} (Coef: {coef})</div>', unsafe_allow_html=True)
         
         col_exam, col_td = st.columns(2)
-        subject_key_part = subject.replace(" ", "_").replace("'", "").replace("é", "e").replace("è", "e").replace("à", "a").lower()
-        exam_key_full = f"{session_state_key_prefix_for_subject}{subject_key_part}_exam"
-        td_key_full = f"{session_state_key_prefix_for_subject}{subject_key_part}_TD"
+        subject_key_part = normalize_key_part(subject)
+        exam_key_full = f"{session_state_key_prefix_for_subject_widgets}{subject_key_part}_exam"
+        td_key_full = f"{session_state_key_prefix_for_subject_widgets}{subject_key_part}_TD"
 
         with col_exam:
             st.number_input("Note Examen", key=exam_key_full, min_value=0.0, max_value=20.0, value=st.session_state.get(exam_key_full), step=0.05, format="%.2f", help="Note de l'examen (0-20)")
@@ -346,17 +376,25 @@ def display_semester_subjects_ui(subjects_dict, semester_id_str, spec_key_prefix
     button_key = f"calculate_avg_{spec_key_prefix}_{semester_id_str}"
     button_text = f"Calculer la Moyenne S{title_semester_num}"
     
-    if spec_key_prefix == "FIN": # Finance button has specific centering
+    # The session state key prefix passed to calculate_semester_average should be the one used for widgets
+    if spec_key_prefix == "FIN": 
         _, col_btn, _ = st.columns([1, 1.5, 1])
         with col_btn:
             if st.button(button_text, key=button_key):
-                calculate_semester_average(title_semester_num, subjects_dict, session_state_key_prefix_for_subject)
-    else: # Other branches' buttons take full width within their column
+                calculate_semester_average(title_semester_num, subjects_dict, session_state_key_prefix_for_subject_widgets)
+    else: 
         if st.button(button_text, key=button_key):
-            calculate_semester_average(title_semester_num, subjects_dict, session_state_key_prefix_for_subject)
+            calculate_semester_average(title_semester_num, subjects_dict, session_state_key_prefix_for_subject_widgets)
 
 # --- Main Application Tabs ---
-main_app_tabs = st.tabs(["Finance d'entreprise", "Comptabilité et finance", "Contrôle de gestion", "Monie, Finance et Banque", "Management"])
+main_app_tabs = st.tabs([
+    "Finance d'entreprise", 
+    "Comptabilité et finance", 
+    "Contrôle de gestion", 
+    "Monie, Finance et Banque", 
+    "Management",
+    "Marketing"
+])
 
 with main_app_tabs[0]: # Finance d'entreprise
     st.markdown('<div class="finance-section">', unsafe_allow_html=True)
@@ -411,13 +449,25 @@ with main_app_tabs[3]: # Monie, Finance et Banque
 with main_app_tabs[4]: # Management
     st.markdown('<div class="management-section">', unsafe_allow_html=True)
     
-    _ , col_management_tabs_content, _ = st.columns([0.2, 2.6, 0.2]) # Consistent layout for sub-tabs
+    _ , col_management_tabs_content, _ = st.columns([0.2, 2.6, 0.2])
     with col_management_tabs_content:
         management_semester_sub_tabs = st.tabs(["Semestre 1", "Semestre 2"])
         with management_semester_sub_tabs[0]:
             display_semester_subjects_ui(management_s1_subjects, "S1", "MGT", is_s2_tab=False)
         with management_semester_sub_tabs[1]:
             display_semester_subjects_ui(management_s2_subjects, "S2", "MGT", is_s2_tab=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+with main_app_tabs[5]: # Marketing
+    st.markdown('<div class="marketing-section">', unsafe_allow_html=True)
+    
+    _ , col_marketing_tabs_content, _ = st.columns([0.2, 2.6, 0.2]) # Consistent layout for sub-tabs
+    with col_marketing_tabs_content:
+        marketing_semester_sub_tabs = st.tabs(["Semestre 1", "Semestre 2"])
+        with marketing_semester_sub_tabs[0]:
+            display_semester_subjects_ui(marketing_s1_subjects, "S1", "MKT", is_s2_tab=False)
+        with marketing_semester_sub_tabs[1]:
+            display_semester_subjects_ui(marketing_s2_subjects, "S2", "MKT", is_s2_tab=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
 
