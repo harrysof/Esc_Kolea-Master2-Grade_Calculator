@@ -2,7 +2,7 @@ import streamlit as st
 
 st.set_page_config(
     page_title="Grade Calculator",
-    page_icon="https://cdn-icons-png.flaticon.com/512/2909/2909988.png",
+    page_icon="https://www.esc-alger.dz/wp-content/uploads/2023/07/logo_min.png",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -29,7 +29,7 @@ st.markdown("""
         --border-color: #3A3A5A;
         --shadow-color: rgba(0, 0, 0, 0.25);
         --glow-color-primary: #ffffff; /* For the main glow */
-        --glow-color-secondary: #d89cf6; /* Accent glow color - from your example */
+        --glow-color-secondary: #d89cf6; /* Accent glow color - for purple average */
     }
 
     body {
@@ -146,19 +146,45 @@ st.markdown("""
         margin-bottom: 1.2rem;
     }
     
+    /* Styling for NumberInput and its label */
     div[data-testid="stNumberInput"] input {
         border-radius: 6px;
         border: 1px solid var(--border-color);
         background-color: var(--bg-accent);
         color: var(--text-light);
         padding: 0.5rem 0.75rem;
+        height: 38.4px; /* Explicit height to match .module-average-display */
+        box-sizing: border-box; /* Ensure padding and border are included in height */
     }
     div[data-testid="stNumberInput"] label {
         font-weight: 400;
         color: var(--text-medium);
         margin-bottom: 0.3rem;
         display: block;
+        font-size: 1rem; /* Match Streamlit's default label font size */
     }
+    
+    .module-average-label { /* Label for Moyenne */
+        font-weight: 400;
+        color: var(--text-medium);
+        margin-bottom: 0.3rem; /* Space between "Moyenne" label and its display box */
+        display: block;
+        font-size: 1rem; /* Match label font size */
+    }
+    
+    .module-average-display { /* The box displaying the Moyenne value */
+        border-radius: 6px;
+        border: 1px solid var(--border-color);
+        background-color: var(--bg-accent);
+        padding: 0.5rem 0.75rem;
+        font-size: 0.95rem; 
+        height: 38.4px; /* Match height of number input box */
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        opacity: 0.9;
+    }
+
 
     /* Button Styling */
     .stButton > button {
@@ -372,8 +398,36 @@ for config_key_prefix, subjects_dict in all_subjects_config.items():
         subject_key_part = normalize_key_part(subject_display_name) 
         exam_key = f"{config_key_prefix}_{subject_key_part}_exam"
         td_key = f"{config_key_prefix}_{subject_key_part}_TD"
+        module_avg_key = f"{config_key_prefix}_{subject_key_part}_module_avg"
+        
         if exam_key not in st.session_state: st.session_state[exam_key] = None
         if td_key not in st.session_state: st.session_state[td_key] = None
+        if module_avg_key not in st.session_state: st.session_state[module_avg_key] = 0.0
+
+def calculate_and_store_module_average(session_prefix, subject_key_part):
+    exam_key = f"{session_prefix}{subject_key_part}_exam"
+    td_key = f"{session_prefix}{subject_key_part}_TD"
+    module_avg_storage_key = f"{session_prefix}{subject_key_part}_module_avg"
+
+    exam_grade_val = st.session_state.get(exam_key)
+    td_grade_val = st.session_state.get(td_key)
+
+    try:
+        exam_grade_float = float(exam_grade_val) if exam_grade_val is not None else 0.0
+    except (ValueError, TypeError):
+        exam_grade_float = 0.0
+    
+    try:
+        td_grade_float = float(td_grade_val) if td_grade_val is not None else 0.0
+    except (ValueError, TypeError):
+        td_grade_float = 0.0
+    
+    exam_grade_float = max(0.0, min(20.0, exam_grade_float))
+    td_grade_float = max(0.0, min(20.0, td_grade_float))
+
+    average = (exam_grade_float * 0.67) + (td_grade_float * 0.33)
+    st.session_state[module_avg_storage_key] = average
+
 
 def calculate_semester_average(semester_num_char, subjects_with_coef, session_state_key_prefix):
     subjects_data = {}
@@ -387,6 +441,7 @@ def calculate_semester_average(semester_num_char, subjects_with_coef, session_st
             td_grade = st.session_state.get(td_key)
             exam_grade = float(exam_grade if exam_grade is not None and str(exam_grade).strip() != "" else 0.0)
             td_grade = float(td_grade if td_grade is not None and str(td_grade).strip() != "" else 0.0)
+            
             if not (0 <= exam_grade <= 20 and 0 <= td_grade <= 20):
                 st.error(f"Les notes pour '{subject_display_name}' doivent être entre 0 et 20.")
                 valid_input = False
@@ -396,26 +451,30 @@ def calculate_semester_average(semester_num_char, subjects_with_coef, session_st
             valid_input = False
             subjects_data[subject_display_name] = {"exam": 0.0, "td": 0.0, "coef": coef} 
     if not valid_input: return
+    
     total_weighted_sum = 0
     total_credits = sum(subjects_with_coef.values())
     if total_credits == 0:
         st.error("Total des crédits est zéro. Impossible de calculer la moyenne.")
         return
+        
     for subject_name_loop, data in subjects_data.items():
-        average = (data["exam"] * 0.67) + (data["td"] * 0.33)
-        total_weighted_sum += average * data["coef"]
+        module_avg = (data["exam"] * 0.67) + (data["td"] * 0.33)
+        total_weighted_sum += module_avg * data["coef"]
+        
     semester_average = total_weighted_sum / total_credits if total_credits else 0
     formatted_avg = "{:.2f}".format(semester_average)
     avg_color_hex = "#FF0000" 
-    if semester_average >= 15: avg_color_hex = "#D89CF6"  
+    if semester_average >= 15: avg_color_hex = "var(--glow-color-secondary)"
     elif semester_average >= 14: avg_color_hex = "#12CAD6"  
     elif semester_average >= 12: avg_color_hex = "#50D890"  
     elif semester_average >= 10: avg_color_hex = "#FE9801"  
+    
     st.markdown(f"""
         <div class="modern-result-box-container">
             <div class="modern-result-box">
                 <h3 class="result-header">Résultats</h3>
-                <p class="result-text"> Moyenne S{semester_num_char}: <strong style="color: {avg_color_hex}">{formatted_avg}</strong></p>
+                <p class="result-text"> Moyenne S{semester_num_char}: <strong style="color: {avg_color_hex};">{formatted_avg}</strong></p>
             </div>
         </div>""", unsafe_allow_html=True)
 
@@ -429,47 +488,53 @@ def display_semester_subjects_ui(subjects_dict, semester_id_str, spec_key_prefix
     for subject_display_name, coef in subjects_dict.items():
         border_color_css = f"color: {branch_color_var}; border-bottom-color: {branch_color_var.replace(')', ', 0.4)').replace('var(', 'rgba(') if 'var(' in branch_color_var else f'{branch_color_var}66'};"
         st.markdown(f'<div class="subject-header" style="{border_color_css}">{subject_display_name} (Coef: {coef})</div>', unsafe_allow_html=True)
-        col_exam, col_td = st.columns(2)
+        
+        col_exam, col_td, col_module_avg_display = st.columns(3)
+        
         subject_key_part = normalize_key_part(subject_display_name)
         exam_key_full = f"{session_state_key_prefix_for_widgets}{subject_key_part}_exam"
         td_key_full = f"{session_state_key_prefix_for_widgets}{subject_key_part}_TD"
+        module_avg_key_full = f"{session_state_key_prefix_for_widgets}{subject_key_part}_module_avg"
+
         with col_exam:
-            st.number_input("Note Examen", key=exam_key_full, min_value=0.0, max_value=20.0, value=st.session_state.get(exam_key_full), step=0.05, format="%.2f")
+            st.number_input("Note Examen", key=exam_key_full, min_value=0.0, max_value=20.0, 
+                            value=st.session_state.get(exam_key_full), step=0.05, format="%.2f",
+                            on_change=calculate_and_store_module_average, 
+                            args=(session_state_key_prefix_for_widgets, subject_key_part))
         with col_td:
-            st.number_input("Note TD", key=td_key_full, min_value=0.0, max_value=20.0, value=st.session_state.get(td_key_full), step=0.05, format="%.2f")
+            st.number_input("Note TD", key=td_key_full, min_value=0.0, max_value=20.0, 
+                            value=st.session_state.get(td_key_full), step=0.05, format="%.2f",
+                            on_change=calculate_and_store_module_average,
+                            args=(session_state_key_prefix_for_widgets, subject_key_part))
+        with col_module_avg_display:
+            current_module_avg_val = st.session_state.get(module_avg_key_full, 0.0)
+            avg_value_float = float(current_module_avg_val)
+
+            avg_color_css_val = "var(--text-light)" 
+            if avg_value_float >= 15: avg_color_css_val = "var(--glow-color-secondary)"
+            elif avg_value_float >= 10: avg_color_css_val = "var(--management-color)"
+            elif avg_value_float >= 7: avg_color_css_val = "var(--mfb-color)"
+            else: avg_color_css_val = "#FF0000"
+            
+            # Use a single st.markdown to contain both label and display box.
+            # Apply a slight negative top margin to the outer div of our custom widget.
+            # The value -0.18rem is approx -2.88px (if 1rem=16px), adjust if needed for perfect alignment.
+            module_avg_html = f"""
+            <div style="margin-top: -0.18rem;"> 
+                <label class='module-average-label'>Moyenne</label>
+                <div class="module-average-display" style="color: {avg_color_css_val};">
+                    {avg_value_float:.2f}
+                </div>
+            </div>
+            """
+            st.markdown(module_avg_html, unsafe_allow_html=True)
+                          
     st.markdown("<br>", unsafe_allow_html=True) 
     
     _, btn_col, _ = st.columns([0.8, 1.4, 0.8])
     with btn_col:
-        button_style_html = f"""
-            <style>
-                #{st.session_state.get(f'button_container_id_{spec_key_prefix}_{semester_id_str}', 'none')} .stButton > button {{
-                    background-color: {branch_color_var} !important;
-                }}
-            </style>
-        """
-        # To make this specific style injection work for each button uniquely, we need a unique ID for its container
-        # Streamlit doesn't allow setting IDs on st.button directly. We can wrap it in a container.
-        # However, a simpler approach might be to just let the general button styling apply if dynamic color
-        # per button becomes too complex with this structure.
-        # For now, this injected style might apply too broadly or not specifically enough.
-        # A better way is to add a class to the button's PARENT container if possible, or use more specific CSS.
-        # Let's try with a more general approach: if the dynamic styling via parent class on semester-tabs-container
-        # is sufficient, or live with one button color if not.
-        # For this iteration, the CSS for buttons per section is removed, relying on a general style or later dynamic class.
-        # The below st.markdown(button_style_html) is commented out as it's hard to target specific buttons.
-        # st.markdown(button_style_html, unsafe_allow_html=True)
-
-
         button_key = f"calculate_avg_{spec_key_prefix}_{semester_id_str}"
         button_text = f"Calculer Moyenne S{title_semester_num}"
-
-        # General button style with specific color applied via a parent class on the section
-        # We need to add a class to the button's container or the main section div.
-        # For simplicity, let's define button colors directly in main CSS based on parent branch section.
-        # Re-add section specific button styles in main CSS:
-        # e.g., .finance-content .stButton > button { background-color: var(--finance-color); }
-
         if st.button(button_text, key=button_key):
             calculate_semester_average(title_semester_num, subjects_dict, session_state_key_prefix_for_widgets)
 
@@ -490,7 +555,7 @@ branch_data_map = {
 with st.sidebar:
     st.markdown("<p class='sidebar-header'>Choisir la Spécialité</p>", unsafe_allow_html=True)
     selected_branch_name = st.selectbox(
-        label=".",
+        label=".", 
         options=branch_display_names,
         index=0, 
         label_visibility="collapsed" 
@@ -501,7 +566,7 @@ if selected_branch_name:
     selected_branch_key_prefix = branch_config["key_prefix"]
     dynamic_content_class = f"{branch_config['css_class_prefix']}-active-sem-tabs" 
 
-    col_padding1, col_content_area, col_padding2 = st.columns([0.15, 2.7, 0.15])
+    col_padding1, col_content_area, col_padding2 = st.columns([0.15, 2.7, 0.15]) 
     with col_content_area:
         st.markdown(f'<div class="semester-tabs-container {dynamic_content_class}">', unsafe_allow_html=True)
         st.markdown(f"""
@@ -517,7 +582,7 @@ if selected_branch_name:
             display_semester_subjects_ui(branch_config["s1"], "S1", selected_branch_key_prefix)
         with semester_sub_tabs[1]:
             display_semester_subjects_ui(branch_config["s2"], "S2", selected_branch_key_prefix)
-        st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True) 
 
 st.markdown("""
 <div class="modern-footer">
